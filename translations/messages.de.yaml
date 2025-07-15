@@ -1,0 +1,14 @@
+procurement:
+  order: Bestellung
+  trackOrder: Lieferung verfolgen
+  orderId: Bestellnummer
+  trackingId: Sendungsnummer
+  invoiceId: Rechnungsnummer
+  orderPlacedDate: Bestelldatum
+  deliveryDate: Lieferdatum
+  paymentDate: Zahlungsdatum
+  productName: Produktname
+  menge: Menge
+  unitPrice: Einzelpreis
+  linePrice: Preis
+  totalPrice: Gesamtpreis

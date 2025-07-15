@@ -1,0 +1,47 @@
+{% extends 'widget/_skeleton.html.twig' %}
+{% block controller %}
+  procurement
+{% endblock %}
+{% block content %}
+  <div class="mb-3">
+    <form data-action="submit->procurement#addToShoppingList">
+      <div class="row">
+        <div class="col-2">
+          <input type="number" id="shopping_list_quantity" class="form-control" placeholder="Quantity" />
+        </div>
+        <div class="col-8">
+          <input type="text" id="shopping_list_name" class="form-control" placeholder="Item" />
+        </div>
+        <div class="col-2">
+          <input type="submit" class="btn btn-primary" value="Add" data-action="click->procurement#addToShoppingList" />
+        </div>
+      </div>
+    </form>
+  </div>
+  <div id="shopping_list">
+    {% for item in items %}
+      <div class="row">
+        <div class="col-1">
+          <input type="checkbox" class="form-check-input rounded-circle" data-action="click->procurement#toggleShoppingList" data-id="{{ item.id }}" />
+        </div>
+        <div class="col-1">{{ item.quantity }}</div>
+        <div class="col-6">{{ item.name }} <small>  ({{item.creationDate | date('d/m/Y')}})</small></div>
+        <div class="col-4">
+          <span href="javascript: void(0);" data-action="click->procurement#setOrdered" data-id="{{ item.id }}">
+            {% if item.isOrdered %}
+              <span class="badge bg-primary ms-end"><i class="mdi mdi-truck"></i></span>
+            {% else %}
+              <span class="badge bg-dark ms-end"><i class="mdi mdi-truck"></i></span>
+            {% endif %}
+          </span>
+          <span href="javascript: void(0);" data-action="click->procurement#deleteShoppingList" data-id="{{ item.id }}"><span class="badge bg-danger ms-end"><i class="mdi mdi-delete"></i></span></span>
+          {% if item.procurementOrder is null %}
+            <a href="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\\Controller\\OrderCrudController').setAction('new').set('shoppingListId', item.id) }}"><span class="badge bg-info ms-end"><i class="mdi mdi-plus"></i></span></a>
+          {% else %}
+            <a href="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\\Controller\\OrderCrudController').setAction('detail').setEntityId(item.procurementOrder.id) }}"><span class="badge bg-info ms-end"><i class="mdi mdi-magnify"></i></span></a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends '@!EasyAdmin/page/content.html.twig' %}
+{% block main %}
+	<div class="container-fluid" data-controller="scanner">
+		<div class="row">
+			<div class="col-12">
+				<div class="page-title-box">
+					<h4 class="page-title">{% trans %}procurement.scanner{% endtrans %}</h4>
+					{# Todo: intégrer les boutons d'easy admin.#}
+					<div class="page-title-right"></div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-body" data-controller="scanner">
+						<h4 class="card-title">{{"procurement.upload" | trans()}}</h4>
+						<form action="{{ path('scanner_upload') }}" method="post" enctype="multipart/form-data">
+							<input type="file" class="form-control" id="fileInput" data-action="change->scanner#uploadFile">
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-body" data-controller="scanner">
+						<h4 class="card-title">
+							{{"procurement.info" | trans()}}</h4>
+						<div class="mb-4"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>{% endblock %}

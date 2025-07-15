@@ -1,0 +1,36 @@
+<table class="table datagrid condensed">
+    <thead>
+        <tr>
+            <th>
+                {% trans %}Date{% endtrans %}
+            </th>
+            <th>
+                {% trans %}Status{% endtrans %}
+            </th>
+            <th>
+                {% trans %}Total{% endtrans %}
+            </th>
+            <th>
+                {% trans %}orderline{% endtrans %}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+            <tr> 
+                <td>
+                    {{order.creationDate | date('d/m/Y') }}
+                </td>
+                <td>
+                    {% if order.status is defined and order.status is not null %}
+                        {% include 'admin/common/_orderStatus.html.twig' with {'status': order.status} %}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ order.id | number_format(2, '.', '') }} 
+                </td>
+                <td></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

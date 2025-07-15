@@ -1,0 +1,102 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+{# @var entity \EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto #}
+{% extends ea.templatePath('layout') %}
+{% form_theme new_form with ea.crud.formThemes only %}
+
+{% trans_default_domain ea.i18n.translationDomain %}
+
+{% block body_id 'ea-new-' ~ entity.name %}
+{% block body_class 'ea-new ea-new-' ~ entity.name %}
+
+{% set ea_field_assets = ea.crud.fieldAssets(constant('EasyCorp\\Bundle\\EasyAdminBundle\\Config\\Crud::PAGE_NEW')) %}
+
+	{% block head_javascript %}
+	{{ parent() }}<script src="{{ asset('form.js', ea.assets.defaultAssetPackageName) }}"> </script>
+{% endblock head_javascript %}
+
+{% block configured_head_contents %}
+	{{ parent() }}
+	{% for htmlContent in ea_field_assets.headContents %}
+		{{ htmlContent|raw }}
+	{% endfor %}
+{% endblock %}
+
+{% block configured_body_contents %}
+	{{ parent() }}
+	{% for htmlContent in ea_field_assets.bodyContents %}
+		{{ htmlContent|raw }}
+	{% endfor %}
+{% endblock %}
+
+{% block configured_stylesheets %}
+	{{ parent() }}
+	{{ include('@EasyAdmin/includes/_css_assets.html.twig', { assets: ea_field_assets.cssAssets }, with_context = false) }}
+	{{ include('@EasyAdmin/includes/_encore_link_tags.html.twig', { assets: ea_field_assets.webpackEncoreAssets }, with_context = false) }}
+{% endblock %}
+
+{% block configured_javascripts %}
+	{{ parent() }}
+	{{ include('@EasyAdmin/includes/_js_assets.html.twig', { assets: ea_field_assets.jsAssets }, with_context = false) }}
+	{{ include('@EasyAdmin/includes/_encore_script_tags.html.twig', { assets: ea_field_assets.webpackEncoreAssets }, with_context = false) }}
+{% endblock %}
+
+{% block content_title %}
+	{%- set custom_page_title = ea.crud.customPageTitle('new', null, ea.i18n.translationParameters, ea.i18n.translationDomain) -%}
+	{{- custom_page_title is null
+        ? ea.crud.defaultPageTitle('new', null, ea.i18n.translationParameters)|trans|raw
+        : custom_page_title|trans|raw -}}
+{% endblock %}
+
+{% block page_actions %}
+	{% for action in entity.actions %}
+		{{ include(action.templatePath, { action: action }, with_context = false) }}
+	{% endfor %}
+{% endblock %}
+
+
+{% block main %}
+	{# voir pour tout virer #}
+	<style>
+
+		.field-collection.form-group.processed {
+			display: none;
+		}
+	</style>
+	<div class="col-12">
+		<div class="card">
+			<div class="card-body" >
+				{% block new_form %}
+					{{ form_start(new_form) }}
+					{{form_row(new_form.thirdParty)}}
+					<table class="table table-stripedmt-2">
+						<thead>
+							<tr>
+								<th>Product</th>
+								<th>Bestellposition</th>
+								<th>Quantity</th>
+								<th>{% trans %}netPrice{% endtrans %}</th>
+								<th>{% trans %}vat{% endtrans %}</th>
+								<th>{% trans %}grossPrice{% endtrans %}</th>
+								<th>Aktion</th>
+							</tr>
+						</thead>
+						<tbody data-controller="invoice"></tbody>
+						<tfoot>
+							<tr>
+								<td colspan="5">
+									<button type="button" class="btn btn-primary" id="add-product" data-prototype="<tr> <td> {{ form_widget(new_form.orderLines.vars.prototype.product)|e('html_attr')}} </td> <td> {{ form_widget(new_form.orderLines.vars.prototype.orderLine)|e('html_attr')}} </td> <td> {{ form_widget(new_form.orderLines.vars.prototype.quantity)|e('html_attr')}} </td> <td> {{ form_widget(new_form.orderLines.vars.prototype.netPrice)|e('html_attr')}} </td> <td> {{ form_widget(new_form.orderLines.vars.prototype.vat)|e('html_attr')}} </td> <td> {{ form_widget(new_form.orderLines.vars.prototype.grossPrice)|e('html_attr')}} </td> <td> <button type='button' class='btn btn-danger remove-product' data-action='click->global#removeFormLineFromTable' >Remove</button> </td> <tr>" data-action="click->global#addFormLineToTable">{% trans %}Add Product{% endtrans %}</button>
+								</td>
+								<td>
+									Total
+								</td>
+								<td id="totalGrossPrice">
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+					{{ form_end(new_form) }}
+				{% endblock new_form %}
+			</div>
+		</div>
+	</div>
+</div>{% endblock %}

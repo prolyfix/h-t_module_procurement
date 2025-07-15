@@ -1,0 +1,7 @@
+{% if ea.crud.currentAction == "index" %}
+    <ul>
+    {% for value in field.value %}
+        <li>{{value.quantity}} x {{value.product.name}}</li>
+    {% endfor %}
+    </ul>
+{% endif %}

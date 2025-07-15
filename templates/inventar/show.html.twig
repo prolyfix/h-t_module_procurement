@@ -1,0 +1,36 @@
+{% extends '@!EasyAdmin/page/content.html.twig' %}
+{% block content_title %}
+	Inventar <span  {{ stimulus_controller('modal-form') }}><a type="button" class="btn btn-info waves-effect waves-light" data-action="modal-form#openModal" data-url="{{ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\InventarCrudController') .setAction('add') .generateUrl()}}"><i class="mdi mdi-plus"></i></a></span>
+{% endblock %}
+
+{% block main %}
+
+	<div class="row">
+		{% for inventar in inventory %}
+			<div class="col-4">
+				<div class="card mb-3">
+					<div class="row g-0">
+						<div class="col-md-4">
+							{% if inventar.0.product.avatarFilename is not null %}
+								<img src="{{asset('/uploads/avatar/'~inventar.0.product.avatarFilename) | imagine_filter('avatar') }}" alt="..." class="img-fluid">
+							{% endif %}
+						</div>
+						<div class="col-md-8">
+							<div class="card-body">
+								<h5 class="card-title">{{inventar.0.product.name}}</h5>
+								<h3 class="mt-1">
+									<span data-plugin="counterup">{{inventar.quantity}}</span>
+								</h3>
+								<div {{ stimulus_controller('modal-form') }}>
+									<button type="button" class="btn btn-lg btn-primary waves-effect waves-light w-100" data-action="modal-form#openModal" data-url="{{ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\InventarCrudController') .setAction('add') .set('productId', inventar.0.product.id) .generateUrl()}}">
+										{% trans %}Add{% endtrans %}</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}
+

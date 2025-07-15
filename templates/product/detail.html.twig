@@ -1,0 +1,143 @@
+{% extends '@!EasyAdmin/page/content.html.twig' %}
+{% block main %}
+	<div
+		class="container-fluid">
+		<!-- start page title -->
+		<div class="row">
+			<div class="col-12">
+				<div class="page-title-box">
+					<h4 class="page-title">{{ entity.name}}</h4>
+				</div>
+			</div>
+		</div>
+		<!-- end page title -->
+
+		<div class="row">
+			<div
+				class="col-xl-8 col-lg-7">
+				<!-- project card -->
+				<div class="card d-block">
+					<div class="card-body">
+						<div class="dropdown float-end">
+							<a href="#" class="dropdown-toggle arrow-none text-muted" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="mdi mdi-dots-horizontal font-18"></i>
+							</a>
+							<div class="dropdown-menu dropdown-menu-end">
+								<a href="
+																																				                                                {{ea_url().setAction('edit', 'task', entity.instance.id)|raw}}" class="dropdown-item">
+									<i class="mdi mdi-pencil-outline me-1"></i>Edit
+								</a>
+								<a href="javascript:void(0);" class="dropdown-item text-danger">
+									<i class="mdi mdi-delete-outline me-1"></i>Delete
+								</a>
+							</div>
+							<!-- end dropdown menu-->
+						</div>
+						<!-- end dropdown-->
+						<div class="clearfix"></div>
+
+						<h4>{{entity.instance.name}}</h4>
+
+						<div class="row">
+							<div
+								class="col-md-8">
+								<!-- assignee -->
+								<p class="mt-2 mb-1 text-muted">{% trans %}Created by{% endtrans %}</p>
+								<div class="d-flex align-items-start">
+									{% include 'common/avatar.html.twig' with {'user': entity.instance.createdBy} %}
+									<div class="w-100">
+										<h5 class="mt-1 font-size-14">
+											{{ entity.instance.createdBy.name }}
+										</h5>
+									</div>
+								</div>
+								<!-- end assignee -->
+							</div>
+							<div class="col-md-4">
+								{% if entity.instance.avatarFilename is not null %}
+									<img class="wt100" src="{{asset('/uploads/avatar/'~entity.instance.avatarFilename) | imagine_filter('avatar') }}" alt="Generic placeholder image">
+								{% endif %}
+							</div>
+							<!-- end col -->
+						</div>
+						<!-- end row -->
+						{% if entity.instance.description | length > 0 %}
+							<h5 class="mt-3">{% trans %}Overview:{% endtrans %}</h5>
+
+							<p class="text-muted mb-4">
+								{{ entity.instance.description | raw}}
+							</p>
+						{% endif %}
+						<!-- end sub tasks/checklists -->
+					</div>
+					<!-- end card-body-->
+				</div>
+				<div class="card d-block">
+					<div class="card-body">
+						<h4>{% trans %}
+							lastOrders
+							{% endtrans %}</h4>
+
+						<div class="row">
+							<div class="col-md-12">
+								<table class="table table-condensed">
+									<thead>
+										<tr>
+											<th>
+												{% trans %}
+												Date
+												{% endtrans %}</th>
+											<th>
+												{% trans %}
+												Quantity
+												{% endtrans %}</th>
+											<th>
+												{% trans %}
+												Price
+												{% endtrans %}</th>
+											<th>
+												{% trans %}
+												Lieferant
+												{% endtrans %}</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for bestellung in bestellungen %}
+											<tr>
+												<td>{{ bestellung.procurementOrder.creationDate | date('d/m/Y') }}</td>
+												<td>{{ bestellung.quantity }}</td>
+												<td>{{ bestellung.price }}</td>
+												<td>{{ bestellung.procurementOrder.thirdParty.name }}</td>
+												<td>
+													<a href="{{ ea_url().setAction('detail').setController('Prolyfix\\ProcurementBundle\\Controller\\OrderCrudController').setEntityId(bestellung.procurementOrder.id)|raw }}" class="btn btn-sm btn-primary">
+														<i class="mdi mdi-eye"></i>
+													</a>
+
+												</td>
+											</tr>
+										{% endfor %}
+
+									</tbody>
+								</table>
+
+							</div>
+							<!-- end col -->
+						</div>
+						<!-- end row -->
+					</div>
+					<!-- end card-body-->
+				</div>
+
+				<!-- end card-->
+				{% include 'section/comment/comments.html.twig' with {'comments': entity.instance.comments} %}
+			</div>
+			<div class="col-xl-4 col-lg-5">
+				{% include 'admin/media/_mediaSidebar.html.twig' with {'entity': entity} %}
+				{% include '@ProlyfixCrmBundle/thirdParty/_relatedCommentable.html.twig' with {'partners': partners, 'type': 'Product'} %}
+			</div>
+		</div>
+		<!-- end row -->
+
+	</div>
+{% endblock %}

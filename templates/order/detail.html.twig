@@ -1,0 +1,188 @@
+{% extends '@!EasyAdmin/page/content.html.twig' %}
+{% block main %}
+	<div
+		class="container-fluid">
+		<!-- start page title -->
+		<div class="row">
+			<div class="col-12">
+				<div class="page-title-box">
+					<h4 class="page-title">{% trans %}procurement.order{% endtrans %}</h4>
+                    {# Todo: intégrer les boutons d'easy admin.#}
+					<div class="page-title-right">
+
+						<a class=" action-index btn btn-secondary" href="/admin?crudAction=index&amp;crudControllerFqcn=Prolyfix%5CProcurementBundle%5CController%5COrderCrudController" data-action-name="index">
+							<span class="action-label">{% trans %}back{% endtrans %}</span>
+						</a>
+
+						<a class=" action-edit btn btn-primary" href="/admin?crudAction=edit&amp;crudControllerFqcn=Prolyfix%5CProcurementBundle%5CController%5COrderCrudController&amp;entityId={{entity.instance.id}}" data-action-name="edit">
+							<span class="action-label">{% trans %}edit{% endtrans %}</span>
+						</a>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end page title -->
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="card">
+					<div class="card-body" data-controller="order">
+						<h4 class="card-title font-16 mb-3">{% trans %}procurement.trackOrder{% endtrans %}</h4>
+
+						<div class="row">
+							<div class="col-lg-4">
+								<div class="mb-4">
+									<h5 class="mt-0">{% trans %}procurement.orderId{% endtrans %}</h5>
+									{% if entity.instance.orderId %}
+										<p>{{entity.instance.orderId}}</p>
+									{% else %}
+										<input type="text" class="form-control" placeholder="{% trans %}procurement.enterOrderId{% endtrans %}" data-action="focusout->order#updateParam" data-field="orderId" data-id="{{entity.instance.id}}" value="{{entity.instance.orderId}}">
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="mb-4">
+									<h5 class="mt-0">{% trans %}procurement.trackingId{% endtrans %}</h5>
+									{% if entity.instance.trackingId %}
+										<p>{{entity.instance.trackingId}}</p>
+									{% else %}
+										<input type="text" class="form-control" placeholder="{% trans %}procurement.enterTrackingId{% endtrans %}" data-action="focusout->order#updateParam" data-field="trackingId" data-id="{{entity.instance.id}}" value="{{entity.instance.trackingId}}">
+									{% endif %}
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="mb-4">
+									<h5 class="mt-0">{% trans %}procurement.invoiceId{% endtrans %}</h5>
+									{# {% if entity.instance.invoiceId %}
+										<p>{{entity.instance.invoiceId}}</p>
+									{% else %}
+										<input type="text" class="form-control" placeholder="{% trans %}procurement.enterInvoiceId{% endtrans %}" data-action="focusout->order#updateParam" data-field="invoiceId" data-id="{{entity.instance.id}}" value="{{entity.instance.invoiceId}}">
+									{% endif %} #}
+								</div>
+							</div>
+						</div>
+
+						<div class="track-order-list">
+							<ul class="list-unstyled">
+								<li class="completed">
+									<h5 class="mt-0 mb-1">{% trans %}procurement.orderPlacedDate{% endtrans %}</h5>
+									<p class="text-muted col-4">
+										{% if entity.instance.orderDate %}
+											{{entity.instance.orderDate | date('d.m.Y')}}
+										{% else %}
+											<input type="date" class="form-control" placeholder="Enter Invoice ID">
+										{% endif %}
+									</p>
+								</li>
+								<li {% if entity.instance.deliveryDate %}class="completed"{% endif %}>
+									{% if not entity.instance.deliveryDate %}<span class="active-dot dot"></span>{% endif %}
+									<h5 class="mt-0 mb-1">{% trans %}procurement.deliveryDate{% endtrans %}</h5>
+									<p class="text-muted col-4">
+										{% if entity.instance.deliveryDate %}
+											{{entity.instance.deliveryDate | date('d.m.Y')}}
+										{% else %}
+											<input type="date" class="form-control" placeholder="{% trans %}procurement.enterDeliveryDate{% endtrans %}" data-action="focusout->order#updateParam" data-field="deliveryDate" data-id="{{entity.instance.id}}" value="{{entity.instance.deliveryDate}}">
+										{% endif %}
+									</p>
+
+								</li>
+								<li {% if entity.instance.paymentDate %}class="completed"{% endif %}>
+                                    {% if not entity.instance.paymentDate and  entity.instance.deliveryDate %}<span class="active-dot dot"></span>{% endif %}
+									<h5 class="mt-0 mb-1">{% trans %}procurement.paymentDate{% endtrans %}</h5>
+									<p class="text-muted col-4">
+										{% if entity.instance.paymentDate %}
+											{{entity.instance.paymentDate | date('d.m.Y')}}
+										{% else %}
+											<input type="date" class="form-control" placeholder="{% trans %}procurement.enterPaymentDate{% endtrans %}" data-action="focusout->order#updateParam" data-field="paymentDate" data-id="{{entity.instance.id}}" value="{{entity.instance.paymentDate}}">
+										{% endif %}
+									</p>
+
+								</li>
+							</ul>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-8">
+				<div class="card">
+					<div class="card-body">
+						<div class="table-responsive">
+							<table class="table table-bordered table-centered mb-0">
+								<thead class="table-light">
+									<tr>
+										<th>{% trans %}procurement.productName{% endtrans %}</th>
+										<th>{% trans %}Product{% endtrans %}</th>
+										<th>{% trans %}Quantity{% endtrans %}</th>
+										<th>{% trans %}procurement.unitPrice{% endtrans %}</th>
+										<th>{% trans %}procurement.linePrice{% endtrans %}</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% set total = 0 %}
+									{% for item in entity.instance.orderLines %}
+										<tr>
+											<th scope="row">{{item.product.name}}</th>
+											<td>{% include 'admin/common/_avatar.html.twig' with {entity:item.product} %}</td>
+											<td>{{item.quantity}}</td>
+											<td>{{item.grossPrice | number_format(2,".",",")}}
+												€</td>
+											<td>{{(item.quantity * item.grossPrice) | number_format(2,".",",")}}
+												€</td>
+											{% set total = total + (item.quantity * item.grossPrice) %}
+										</tr>
+									{% endfor %}
+									<tr>
+										<th scope="row" colspan="4" class="text-end">{% trans %}procurement.totalPrice{% endtrans %}
+											:</th>
+										<td>
+											<div class="fw-bold">{{total | number_format(2,".",",")}}
+												€</div>
+										</td>
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end row -->
+
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="card">
+					<div class="card-body">
+						<h4 class="card-title font-16 mb-3">{% trans %}
+							Lieferant
+							{% endtrans %}</h4>
+
+						<h5 class="font-family-primary fw-semibold">{{entity.instance.thirdParty.name }}</h5>
+
+						<p class="mb-2">
+							<span class="fw-semibold me-2">Address:</span>
+							{{entity.instance.thirdParty.location.street}}
+							|
+							{{entity.instance.thirdParty.location.zipCode}}
+							{{entity.instance.thirdParty.location.city}}</p>
+						<p class="mb-2">
+							<span class="fw-semibold me-2">Phone:</span>
+							{{entity.instance.thirdParty.phone}}
+						</p>
+						<p class="mb-0">
+							<span class="fw-semibold me-2">E-mail:</span>
+							{{entity.instance.thirdParty.email}}</p>
+
+					</div>
+				</div>
+			</div>
+			<!-- end col -->
+			<div class="col-lg-4">
+				{% include 'admin/media/_mediaSidebar.html.twig' with {'entity': entity,'choices':{'invoice':'invoice','lieferschein':'lieferschein'}} %}
+			</div>
+		</div>
+		<!-- end row -->
+
+	</div>
+{% endblock %}
