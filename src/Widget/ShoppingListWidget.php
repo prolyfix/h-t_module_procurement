@@ -62,7 +62,7 @@ class ShoppingListWidget implements WidgetInterface
     public function render(): string
     {
         $items = $this->em->getRepository(ShoppingList::class)->findBy(['state'=>'open']);
-        return 	$this->twig->render('@ProlyfixProcurementBundle/widget/shopping_list_widget.html.twig',[
+        return 	$this->twig->render('@ProlyfixProcurement/widget/shopping_list_widget.html.twig',[
             'title' => 'ShoppingListWidget',
             'content' => 'ShoppingList content',
             'items' => $items,

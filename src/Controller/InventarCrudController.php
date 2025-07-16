@@ -74,7 +74,7 @@ class InventarCrudController extends AbstractCrudController
     {
         $inventory = $repo->getOverview();
         $inventarType = $this->createForm(InventarType::class, (new Inventar()));
-        return $this->render('@ProlyfixProcurementBundle/inventar/show.html.twig', [
+        return $this->render('@ProlyfixProcurement/inventar/show.html.twig', [
             'inventory' => $inventory,
             'form' => $inventarType->createView()
         ]);

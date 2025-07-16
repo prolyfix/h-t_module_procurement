@@ -37,10 +37,10 @@ class OrderCrudController extends BaseCrudController
     {
         return $crud
             ->overrideTemplates([
-                'crud/detail' => '@ProlyfixProcurementBundle/order/detail.html.twig',
-                'crud/new' => '@ProlyfixProcurementBundle/order/new.html.twig',
+                'crud/detail' => '@ProlyfixProcurement/order/detail.html.twig',
+                'crud/new' => '@ProlyfixProcurement/order/new.html.twig',
             ])
-            ->setFormThemes(['@ProlyfixProcurementBundle/order/form.html.twig']);
+            ->setFormThemes(['@ProlyfixProcurement/order/form.html.twig']);
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -64,7 +64,7 @@ class OrderCrudController extends BaseCrudController
                     ;
             }),
             CollectionField::new('orderLines')->setEntryType(OrderLineType::class)
-                ->setFormTypeOption('by_reference', false)->setTemplatePath('@ProlyfixProcurementBundle/order/order_lines.html.twig'),            
+                ->setFormTypeOption('by_reference', false)->setTemplatePath('@ProlyfixProcurement/order/order_lines.html.twig'),            
             NumberField::new('price')->hideOnForm() ,
             BooleanField::new('isPaid'),
             BooleanField::new('isDelivered'),
@@ -83,7 +83,7 @@ class OrderCrudController extends BaseCrudController
     public function parseDoc(AdminContext $context)
     {
         $form = $this->createForm(ParserType::class);
-        return $this->render('@ProlyfixProcurementBundle/order/doc_parser.html.twig', [
+        return $this->render('@ProlyfixProcurement/order/doc_parser.html.twig', [
             'order' => $context->getEntity()->getInstance(),
             'form' => $form->createView(),
         ]);
@@ -125,7 +125,7 @@ class OrderCrudController extends BaseCrudController
         $limit = $request->get('limit')??10;
         $thirdParty = $this->em->getRepository(ThirdParty::class)->findOneById($entityId);
         $orders = $this->em->getRepository(Order::class)->findBy(['thirdParty' => $thirdParty], ['creationDate' => 'DESC'], $limit, $offset);
-        return $this->render('@ProlyfixProcurementBundle/order/_third_party_tab.html.twig', [
+        return $this->render('@ProlyfixProcurement/order/_third_party_tab.html.twig', [
             'orders' => $orders,
         ]);
     }
@@ -142,7 +142,7 @@ class OrderCrudController extends BaseCrudController
                 // ...
             }
         }
-        return $this->render('@ProlyfixProcurementBundle/order/document_scanner.html.twig', [
+        return $this->render('@ProlyfixProcurement/order/document_scanner.html.twig', [
             'order' => $order,
             'form' => $form->createView(),
         ]);

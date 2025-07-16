@@ -70,7 +70,7 @@ class ProductCrudController extends BaseCrudController
     {
         return $crud
             ->overrideTemplates([
-                'crud/detail' => '@ProlyfixProcurementBundle/product/detail.html.twig',
+                'crud/detail' => '@ProlyfixProcurement/product/detail.html.twig',
             ]);
     }
     public function detail(AdminContext $context)

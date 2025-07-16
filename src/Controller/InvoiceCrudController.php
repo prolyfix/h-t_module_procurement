@@ -43,7 +43,7 @@ class InvoiceCrudController extends AbstractCrudController
             // ...
             // Redirect or render a response
         }
-        return $this->render('@ProlyfixProcurementBundle/order/doc_parser.html.twig', [
+        return $this->render('@ProlyfixProcurement/order/doc_parser.html.twig', [
             'order' => $context->getEntity()->getInstance(),
             'form' => $form->createView(),
         ]);
