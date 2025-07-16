@@ -12,3 +12,6 @@ procurement:
   unitPrice: Einzelpreis
   linePrice: Preis
   totalPrice: Gesamtpreis
+  Is Sprechstundenbedarf: Ist Sprechstundenbedarf
+  Has Expiration Date: Hat Verfallsdatum
+  Minimal Quantity: Minimale Menge
