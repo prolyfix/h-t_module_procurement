@@ -2,8 +2,8 @@
 
 namespace Prolyfix\ProcurementBundle\Controller;
 
-use App\Controller\Admin\BaseCrudController;
-use App\Form\MediaType;
+use Prolyfix\HolidayAndTime\Controller\Admin\BaseCrudController;
+use Prolyfix\HolidayAndTime\Form\MediaType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;

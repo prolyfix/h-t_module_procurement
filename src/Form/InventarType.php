@@ -2,8 +2,8 @@
 
 namespace Prolyfix\ProcurementBundle\Form;
 
-use App\Entity\Company;
-use App\Entity\User;
+use Prolyfix\HolidayAndTime\Entity\Company;
+use Prolyfix\HolidayAndTime\Entity\User;
 use Doctrine\DBAL\Types\IntegerType;
 use Prolyfix\ProcurementBundle\Entity\Inventar;
 use Prolyfix\ProcurementBundle\Entity\Product;

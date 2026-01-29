@@ -2,7 +2,7 @@
 
 namespace Prolyfix\ProcurementBundle\Repository;
 
-use App\Repository\SearchableTrait;
+use Prolyfix\HolidayAndTime\Repository\SearchableTrait;
 use Prolyfix\ProcurementBundle\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;

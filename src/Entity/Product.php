@@ -2,15 +2,15 @@
 
 namespace Prolyfix\ProcurementBundle\Entity;
 
-use App\Attribute\SearchableEntity;
-use App\Attribute\SearchableField;
-use App\Entity\Commentable;
+use Prolyfix\HolidayAndTime\Attribute\SearchableEntity;
+use Prolyfix\HolidayAndTime\Attribute\SearchableField;
+use Prolyfix\HolidayAndTime\Entity\Commentable;
 use Prolyfix\ProcurementBundle\Entity\Inventar;
 use Prolyfix\ProcurementBundle\Entity\OrderLine;
-use App\Entity\TimeData;
-use App\Entity\Trait\AvatarTrait;
-use App\Entity\Trait\CommentsTrait;
-use App\Entity\Trait\MediaTrait;
+use Prolyfix\HolidayAndTime\Entity\TimeData;
+use Prolyfix\HolidayAndTime\Entity\Trait\AvatarTrait;
+use Prolyfix\HolidayAndTime\Entity\Trait\CommentsTrait;
+use Prolyfix\HolidayAndTime\Entity\Trait\MediaTrait;
 use Prolyfix\ProcurementBundle\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

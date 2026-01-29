@@ -2,9 +2,9 @@
 
 namespace Prolyfix\ProcurementBundle;
 
-use App\Entity\Module\ModuleConfiguration;
-use App\Entity\Module\ModuleRight;
-use App\Module\ModuleBundle;
+use Prolyfix\HolidayAndTime\Entity\Module\ModuleConfiguration;
+use Prolyfix\HolidayAndTime\Entity\Module\ModuleRight;
+use Prolyfix\HolidayAndTime\Module\ModuleBundle;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use Prolyfix\ProcurementBundle\Entity\Calendar;
 use Prolyfix\ProcurementBundle\Entity\Inventar;

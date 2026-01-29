@@ -2,8 +2,8 @@
 
 namespace Prolyfix\ProcurementBundle\Form;
 
-use App\Entity\Commentable;
-use App\Entity\Media;
+use Prolyfix\HolidayAndTime\Entity\Commentable;
+use Prolyfix\HolidayAndTime\Entity\Media;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;

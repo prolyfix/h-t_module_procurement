@@ -2,7 +2,7 @@
 
 namespace Prolyfix\ProcurementBundle\Entity;
 
-use App\Entity\TimeData;
+use Prolyfix\HolidayAndTime\Entity\TimeData;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +12,7 @@ use Prolyfix\ProcurementBundle\Repository\ReceiptRepository;
 #[ORM\Entity(repositoryClass: ReceiptRepository::class)]
 class Receipt extends TimeData
 {
-    use \App\Entity\Trait\AvatarTrait;
+    use \Prolyfix\HolidayAndTime\Entity\Trait\AvatarTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

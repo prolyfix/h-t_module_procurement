@@ -2,7 +2,7 @@
 
 namespace Prolyfix\ProcurementBundle\Controller;
 
-use App\Controller\Admin\BaseCrudController;
+use Prolyfix\HolidayAndTime\Controller\Admin\BaseCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;

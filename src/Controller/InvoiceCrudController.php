@@ -2,7 +2,7 @@
 
 namespace Prolyfix\ProcurementBundle\Controller;
 
-use App\Entity\Media;
+use Prolyfix\HolidayAndTime\Entity\Media;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;

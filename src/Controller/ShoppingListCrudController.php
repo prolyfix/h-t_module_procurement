@@ -2,7 +2,7 @@
 
 namespace Prolyfix\ProcurementBundle\Controller;
 
-use App\Controller\Admin\BaseCrudController;
+use Prolyfix\HolidayAndTime\Controller\Admin\BaseCrudController;
 use Prolyfix\ProcurementBundle\Entity\ShoppingList;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;

@@ -3,11 +3,11 @@
 namespace Prolyfix\ProcurementBundle\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Entity\Comment;
-use App\Entity\Commentable;
+use Prolyfix\HolidayAndTime\Entity\Comment;
+use Prolyfix\HolidayAndTime\Entity\Commentable;
 use Doctrine\DBAL\Types\Types;
 use Prolyfix\ProcurementBundle\Entity\OrderLine;
-use App\Entity\TimeData;
+use Prolyfix\HolidayAndTime\Entity\TimeData;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Prolyfix\ProcurementBundle\Repository\OrderRepository;

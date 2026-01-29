@@ -1,7 +1,7 @@
 <?php
 namespace Prolyfix\ProcurementBundle\EventListener;
 
-use App\Event\ModifiableArrayEvent;
+use Prolyfix\HolidayAndTime\Event\ModifiableArrayEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Prolyfix\ProcurementBundle\Widget\ShoppingListWidget;
 use Prolyfix\RssBundle\Widget\RssWidget;

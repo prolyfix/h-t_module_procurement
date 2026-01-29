@@ -3,7 +3,7 @@
 namespace Prolyfix\ProcurementBundle\EventListener;
 
 use ApiPlatform\Metadata\UrlGeneratorInterface;
-use App\Entity\Notification;
+use Prolyfix\HolidayAndTime\Entity\Notification;
 use Doctrine\ORM\EntityManagerInterface;
 use Prolyfix\ProcurementBundle\Controller\ReceiptCrudController;
 use Prolyfix\ProcurementBundle\Entity\Receipt;

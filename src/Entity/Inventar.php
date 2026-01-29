@@ -2,7 +2,7 @@
 
 namespace Prolyfix\ProcurementBundle\Entity;
 
-use App\Entity\TimeData;
+use Prolyfix\HolidayAndTime\Entity\TimeData;
 use Doctrine\DBAL\Types\Types;
 use Prolyfix\ProcurementBundle\Repository\InventarRepository;
 use Doctrine\ORM\Mapping as ORM;
