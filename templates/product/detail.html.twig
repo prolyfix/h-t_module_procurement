@@ -44,7 +44,7 @@
 								<!-- assignee -->
 								<p class="mt-2 mb-1 text-muted">{% trans %}Created by{% endtrans %}</p>
 								<div class="d-flex align-items-start">
-									{% include 'common/avatar.html.twig' with {'user': entity.instance.createdBy} %}
+									{% include '@ProlyfixHolidayAndTime/common/avatar.html.twig' with {'user': entity.instance.createdBy} %}
 									<div class="w-100">
 										<h5 class="mt-1 font-size-14">
 											{{ entity.instance.createdBy.name }}

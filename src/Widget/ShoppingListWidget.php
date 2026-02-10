@@ -1,7 +1,7 @@
 <?php 
 namespace Prolyfix\ProcurementBundle\Widget;
 
-use App\Widget\WidgetInterface;
+use Prolyfix\HolidayAndTime\Widget\WidgetInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Prolyfix\ProcurementBundle\Entity\ShoppingList;
 use Prolyfix\NoteBundle\Entity\Note;
