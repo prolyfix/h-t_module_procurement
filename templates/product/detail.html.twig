@@ -130,11 +130,11 @@
 				</div>
 
 				<!-- end card-->
-				{% include 'section/comment/comments.html.twig' with {'comments': entity.instance.comments} %}
+				{% include '@ProlyfixHolidayAndTime/section/comment/comments.html.twig' with {'comments': entity.instance.comments} %}
 			</div>
 			<div class="col-xl-4 col-lg-5">
-				{% include 'admin/media/_mediaSidebar.html.twig' with {'entity': entity} %}
-				{% include '@ProlyfixCrmBundle/thirdParty/_relatedCommentable.html.twig' with {'partners': partners, 'type': 'Product'} %}
+				{% include '@ProlyfixHolidayAndTime/admin/media/_mediaSidebar.html.twig' with {'entity': entity} %}
+				{% include '@ProlyfixCrm/thirdParty/_relatedCommentable.html.twig' with {'partners': partners, 'type': 'Product'} %}
 			</div>
 		</div>
 		<!-- end row -->

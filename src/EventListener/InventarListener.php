@@ -56,7 +56,7 @@ final class InventarListener
                 $email->from(new Address($this->params->get('email_sender'), $this->params->get('email_sender_name')))
                     ->to($admin->getEmail())
                     ->subject('Produkt nachbestellen')
-                    ->htmlTemplate('email/inventar_bestellung.html.twig')
+                    ->htmlTemplate('@ProlyfixHolidayAndTime/email/inventar_bestellung.html.twig')
                     ->context([
                         'inventar' => $inventar
                     ]);

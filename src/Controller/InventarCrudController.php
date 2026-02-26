@@ -65,7 +65,7 @@ class InventarCrudController extends AbstractCrudController
             $em->flush();
             return new JsonResponse(['status' => 'success']);
         }
-        return $this->render('common/simpleForm.html.twig', [
+        return $this->render('@ProlyfixHolidayAndTime/common/simpleForm.html.twig', [
             'form' => $form->createView()
         ]);
     }

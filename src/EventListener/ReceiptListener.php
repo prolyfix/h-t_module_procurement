@@ -50,7 +50,7 @@ final class ReceiptListener
             $email->from(new Address($this->params->get('email_sender'), $this->params->get('email_sender_name')))
                 ->to($receipt->getOwner()->getManager()->getEmail())
                 ->subject('Eingereichte Quittung')
-                ->htmlTemplate('email/belege.html.twig')
+                ->htmlTemplate('@ProlyfixHolidayAndTime/email/belege.html.twig')
                 ->context([
                     'receipt' => $receipt
                 ]);

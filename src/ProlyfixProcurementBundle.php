@@ -129,7 +129,6 @@ class ProlyfixProcurementBundle extends ModuleBundle
 
     public  function getMenuConfiguration(): array
     {
-        return [];
         return ['Procurement' => [
             MenuItem::section('Einkauf', 'fas fa-dollar-sign'),
             MenuItem::linkToCrud('Bestellungen', 'fas fa-cart', Order::class),
