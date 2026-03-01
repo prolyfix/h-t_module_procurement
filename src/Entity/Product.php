@@ -63,6 +63,9 @@ class Product extends Commentable
     #[ORM\Column(nullable: true)]
     private ?bool $hasExpirationDate = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $hasPeremption = null;
+
     #[ORM\Column]
     private ?float $minimalQuantity = null;
 
@@ -241,6 +244,18 @@ class Product extends Commentable
     public function setHasExpirationDate(?bool $hasExpirationDate): static
     {
         $this->hasExpirationDate = $hasExpirationDate;
+
+        return $this;
+    }
+
+    public function hasPeremption(): ?bool
+    {
+        return $this->hasPeremption ?? false;
+    }
+
+    public function setHasPeremption(?bool $hasPeremption): static
+    {
+        $this->hasPeremption = $hasPeremption;
 
         return $this;
     }

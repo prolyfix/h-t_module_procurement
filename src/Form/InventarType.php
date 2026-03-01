@@ -9,6 +9,7 @@ use Prolyfix\ProcurementBundle\Entity\Inventar;
 use Prolyfix\ProcurementBundle\Entity\Product;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType as TypeIntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,11 +22,17 @@ class InventarType extends AbstractType
         $product = $data->getProduct();
         $builder
             ->add('quantity',TypeIntegerType::class,['attr' => ['class' => 'form-control']])
-            ->add('comment',null,['attr' => ['class' => 'form-control']]);
-        if($product !== null && $product->hasExpirationDate()){
+            ->add('comment',null,['attr' => ['class' => 'form-control']])
+            ->add('isInventar', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Inventar',
+            ]);
+        if($product !== null && ($product->hasPeremption() || $product->hasExpirationDate())){
             $builder->add('expirationDate', \Symfony\Component\Form\Extension\Core\Type\DateType::class, [
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
+                'required' => false,
+                'label' => 'Date de péremption',
             ]);
         }
         ;

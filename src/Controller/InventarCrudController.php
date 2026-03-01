@@ -3,17 +3,15 @@
 namespace Prolyfix\ProcurementBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Prolyfix\ProcurementBundle\Entity\Inventar;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use PHPUnit\Util\Json;
+use Prolyfix\ProcurementBundle\Entity\Inventar;
 use Prolyfix\ProcurementBundle\Entity\Product;
 use Prolyfix\ProcurementBundle\Form\InventarType;
+use Prolyfix\ProcurementBundle\Helper\PeremptionAlertHelper;
 use Prolyfix\ProcurementBundle\Repository\InventarRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,6 +40,10 @@ class InventarCrudController extends AbstractCrudController
     {
         $productId = $request->get('productId');
         $inventar = (new Inventar());
+        if ((bool) $request->get('isInventar', false)) {
+            $inventar->setIsInventar(true);
+        }
+
         if($productId){
             $product = $em->getRepository(Product::class)->find($productId);
             if(!$product)
@@ -77,6 +79,31 @@ class InventarCrudController extends AbstractCrudController
         return $this->render('@ProlyfixProcurement/inventar/show.html.twig', [
             'inventory' => $inventory,
             'form' => $inventarType->createView()
+        ]);
+    }
+
+    public function productDetail(Request $request, EntityManagerInterface $em, InventarRepository $repo): Response
+    {
+        $productId = $request->get('productId');
+        if (!$productId) {
+            throw new \InvalidArgumentException('Missing productId');
+        }
+
+        $product = $em->getRepository(Product::class)->find($productId);
+        if (!$product) {
+            throw new \Exception('Product not found');
+        }
+
+        $movements = $repo->getMovementsByProduct($product);
+        $stockResult = $repo->StockByProduct($product);
+        $currentStock = (float) ($stockResult[0]['quantity'] ?? 0.0);
+        $alertMessage = (new PeremptionAlertHelper())->getAlertMessage($product, $movements, $currentStock);
+
+        return $this->render('@ProlyfixProcurement/inventar/detail.html.twig', [
+            'product' => $product,
+            'movements' => $movements,
+            'currentStock' => $currentStock,
+            'alertMessage' => $alertMessage,
         ]);
     }
 

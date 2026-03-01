@@ -30,6 +30,9 @@ class Inventar extends TimeData
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $expirationDate = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isInventar = null;
+
 
     public function getId(): ?int
     {
@@ -81,6 +84,18 @@ class Inventar extends TimeData
     public function setExpirationDate(?\DateTime $expirationDate): static
     {
         $this->expirationDate = $expirationDate;
+
+        return $this;
+    }
+
+    public function isInventar(): ?bool
+    {
+        return $this->isInventar ?? false;
+    }
+
+    public function setIsInventar(?bool $isInventar): static
+    {
+        $this->isInventar = $isInventar;
 
         return $this;
     }

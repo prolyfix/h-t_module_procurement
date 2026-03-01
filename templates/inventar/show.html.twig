@@ -21,6 +21,9 @@
 								<h3 class="mt-1">
 									<span data-plugin="counterup">{{inventar.quantity}}</span>
 								</h3>
+								<a href="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\InventarCrudController').setAction('productDetail').set('productId', inventar.0.product.id).generateUrl() }}" class="btn btn-outline-secondary btn-sm mb-2 w-100">
+									{% trans %}Details{% endtrans %}
+								</a>
 								<div {{ stimulus_controller('modal-form') }}>
 									<button type="button" class="btn btn-lg btn-primary waves-effect waves-light w-100" data-action="modal-form#openModal" data-url="{{ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\InventarCrudController') .setAction('add') .set('productId', inventar.0.product.id) .generateUrl()}}">
 										{% trans %}Add{% endtrans %}</button>

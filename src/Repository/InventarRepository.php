@@ -36,4 +36,14 @@ class InventarRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getMovementsByProduct(Product $product): array
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.product = :product')
+            ->setParameter('product', $product)
+            ->orderBy('i.creationDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -39,7 +39,7 @@ class ProductCrudController extends BaseCrudController
             TextareaField::new('description')->hideOnIndex(),
             ImageField::new('avatarFilename')->setUploadDir('public/uploads/avatar')->setBasePath('uploads/avatar')->setCssClass('index_avatar')  ,
             BooleanField::new('isSprechstundenbedarf'),
-            BooleanField::new('hasExpirationDate'),
+            BooleanField::new('hasPeremption'),
             NumberField::new('minimalQuantity'),
             ImageField::new('avatarFilename')->setUploadDir('public/uploads/avatar')->setBasePath('uploads/avatar')->hideOnIndex()  ,
         ];

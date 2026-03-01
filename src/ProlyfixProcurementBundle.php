@@ -29,7 +29,6 @@ class ProlyfixProcurementBundle extends ModuleBundle
     {
         return [
             Order::class,
-            Product::class,
             Receipt::class,
             ShoppingList::class,
             Inventar::class,
