@@ -8,7 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Prolyfix\ProcurementBundle\Entity\Invoice;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Prolyfix\ProcurementBundle\Form\ParserType;
@@ -23,6 +25,19 @@ class InvoiceCrudController extends AbstractCrudController
     {
         return Invoice::class;
     }
+
+    public function configureFields(string $pageName): iterable
+    {
+        yield IdField::new('id')->hideOnForm();
+        yield BooleanField::new('isPaid', 'Bezahlt');
+
+        if (class_exists('Prolyfix\BankingBundle\Entity\Entry')) {
+            yield IntegerField::new('bankingEntryId', 'Banking-Eintrag (ID)')
+                ->setHelp('ID des zugehörigen Bankbuchungs-Eintrags')
+                ->setRequired(false);
+        }
+    }
+
     public function parseDoc(AdminContext $context, Request $request, EntityManagerInterface $em)
     {
         $media = new Media();
@@ -48,14 +63,4 @@ class InvoiceCrudController extends AbstractCrudController
             'form' => $form->createView(),
         ]);
     }
-    /*
-    public function configureFields(string $pageName): iterable
-    {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
-    }
-    */
 }
