@@ -15,3 +15,32 @@ procurement:
   Is Sprechstundenbedarf: Ist Sprechstundenbedarf
   Has Expiration Date: Hat Verfallsdatum
   Minimal Quantity: Minimale Menge
+  deliverySlip: Lieferschein
+  deliverySlipId: Lieferscheinnummer
+  deliverySlipInfo: Lieferscheindaten
+  invoice: Rechnung
+  ocr:
+    title: Dokument-Scanner (KI / OCR)
+    upload: PDF-Dokument hochladen
+    analyze: Analysieren
+    analyzing: Dokument wird analysiert...
+    document: Dokument
+    recognizedInfo: Erkannte Informationen
+    documentType: Dokumenttyp
+    type:
+      delivery: Lieferschein
+      invoice: Rechnung
+      order: Bestellung
+    documentId: Dokumentnummer
+    documentDate: Dokumentdatum
+    customer: Kunde / Lieferant
+    selectCustomer: Kunden auswählen
+    customerNotFound: Kunde nicht gefunden
+    createCustomer: Neuen Kunden anlegen
+    customerName: Kundenname
+    relatedDocument: Zugehörige Dokumente
+    lines: Positionen
+    addLine: Position hinzufügen
+    none: Keine
+    submit: Speichern
+    success: Dokument erfolgreich gespeichert!

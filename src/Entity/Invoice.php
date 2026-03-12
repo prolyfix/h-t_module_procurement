@@ -28,20 +28,19 @@ class Invoice
      * @var Collection<int, Order>
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'invoice')]
-    private Collection $bestellung;
-
-    /**
-     * @var Collection<int, Order>
-     */
-    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'invoice')]
     private Collection $orders;
 
+    /**
+     * @var Collection<int, DeliverySlip>
+     */
+    #[ORM\OneToMany(targetEntity: DeliverySlip::class, mappedBy: 'invoice', cascade: ['persist'])]
+    private Collection $deliverySlips;
 
     public function __construct()
     {
         $this->invoiceLines = new ArrayCollection();
-        $this->bestellung = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->deliverySlips = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -121,5 +120,33 @@ class Invoice
         return $this;
     }
 
+    /**
+     * @return Collection<int, DeliverySlip>
+     */
+    public function getDeliverySlips(): Collection
+    {
+        return $this->deliverySlips;
+    }
+
+    public function addDeliverySlip(DeliverySlip $deliverySlip): static
+    {
+        if (!$this->deliverySlips->contains($deliverySlip)) {
+            $this->deliverySlips->add($deliverySlip);
+            $deliverySlip->setInvoice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDeliverySlip(DeliverySlip $deliverySlip): static
+    {
+        if ($this->deliverySlips->removeElement($deliverySlip)) {
+            if ($deliverySlip->getInvoice() === $this) {
+                $deliverySlip->setInvoice(null);
+            }
+        }
+
+        return $this;
+    }
 
 }
