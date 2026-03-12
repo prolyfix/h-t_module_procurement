@@ -10,20 +10,25 @@ use Prolyfix\ProcurementBundle\Entity\DeliverySlipLine;
 use Prolyfix\ProcurementBundle\Entity\Invoice;
 use Prolyfix\ProcurementBundle\Entity\Order;
 use Prolyfix\ProcurementBundle\Form\ParserType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/procurement/ocr', name: 'procurement_ocr_')]
-class OcrScannerController extends AbstractController
+class OcrScannerController extends AbstractCrudController
 {
     public function __construct(private EntityManagerInterface $em)
     {
     }
 
-    #[Route('/pdf/{id}', name: 'pdf', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public static function getEntityFqcn(): string
+    {
+        // This controller is action-oriented (OCR workflow) but EasyAdmin requires an entity FQCN.
+        return Media::class;
+    }
+
     public function servePdf(int $id): Response
     {
         $media = $this->em->getRepository(Media::class)->find($id);
@@ -48,8 +53,7 @@ class OcrScannerController extends AbstractController
         );
     }
 
-    #[Route('', name: 'index')]
-    public function index(Request $request): Response
+    public function scanner(): Response
     {
         $media = new Media();
         $form = $this->createForm(ParserType::class, $media);
@@ -59,7 +63,6 @@ class OcrScannerController extends AbstractController
         ]);
     }
 
-    #[Route('/upload', name: 'upload', methods: ['POST'])]
     public function upload(Request $request): JsonResponse
     {
         $media = new Media();
@@ -108,7 +111,6 @@ class OcrScannerController extends AbstractController
         return new JsonResponse($result);
     }
 
-    #[Route('/submit', name: 'submit', methods: ['POST'])]
     public function submit(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
