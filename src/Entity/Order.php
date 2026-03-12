@@ -80,6 +80,11 @@ class Order extends Commentable
     #[ORM\ManyToOne(inversedBy: 'orders')]
     private ?Invoice $invoice = null;
 
+    /**
+     * @var Collection<int, DeliverySlip>
+     */
+    #[ORM\OneToMany(targetEntity: DeliverySlip::class, mappedBy: 'procurementOrder', cascade: ['persist'])]
+    private Collection $deliverySlips;
 
     public function __construct()
     {
@@ -88,6 +93,7 @@ class Order extends Commentable
         $this->state = 'new';
         $this->shoppingLists = new ArrayCollection();
         $this->orderDate = new \DateTime();
+        $this->deliverySlips = new ArrayCollection();
     }
 
 
@@ -320,6 +326,35 @@ class Order extends Commentable
     public function setInvoice(?Invoice $invoice): static
     {
         $this->invoice = $invoice;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DeliverySlip>
+     */
+    public function getDeliverySlips(): Collection
+    {
+        return $this->deliverySlips;
+    }
+
+    public function addDeliverySlip(DeliverySlip $deliverySlip): static
+    {
+        if (!$this->deliverySlips->contains($deliverySlip)) {
+            $this->deliverySlips->add($deliverySlip);
+            $deliverySlip->setProcurementOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDeliverySlip(DeliverySlip $deliverySlip): static
+    {
+        if ($this->deliverySlips->removeElement($deliverySlip)) {
+            if ($deliverySlip->getProcurementOrder() === $this) {
+                $deliverySlip->setProcurementOrder(null);
+            }
+        }
 
         return $this;
     }

@@ -1,0 +1,196 @@
+{% extends '@!EasyAdmin/page/content.html.twig' %}
+
+{% block main %}
+<div class="container-fluid" data-controller="ocr-scanner"
+     data-ocr-scanner-upload-url-value="{{ path('procurement_ocr_upload') }}"
+     data-ocr-scanner-submit-url-value="{{ path('procurement_ocr_submit') }}"
+     data-ocr-scanner-pdf-base-url-value="{{ path('procurement_ocr_pdf', {'id': '__ID__'}) }}">
+
+    <!-- Page Title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <h4 class="page-title">{{ 'procurement.ocr.title'|trans }}</h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Form -->
+    <div class="row mb-3" id="upload-section">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ 'procurement.ocr.upload'|trans }}</h5>
+                    {{ form_start(form, {'attr': {'id': 'ocr-upload-form', 'enctype': 'multipart/form-data', 'novalidate': 'novalidate'}}) }}
+                    {{ form_widget(form) }}
+                    <button type="button" class="btn btn-primary mt-2"
+                            data-action="click->ocr-scanner#uploadDocument">
+                        {{ 'procurement.ocr.analyze'|trans }}
+                    </button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="row mb-3 d-none" id="loading-section">
+        <div class="col-12 text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">{{ 'procurement.ocr.analyzing'|trans }}</span>
+            </div>
+            <p class="mt-2">{{ 'procurement.ocr.analyzing'|trans }}</p>
+        </div>
+    </div>
+
+    <!-- Results Section (hidden until file uploaded) -->
+    <div class="row d-none" id="results-section">
+        <!-- Left: PDF Viewer -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ 'procurement.ocr.document'|trans }}</h5>
+                </div>
+                <div class="card-body p-0">
+                    <iframe id="pdf-viewer"
+                            src=""
+                            style="width:100%; height:700px; border:none;"
+                            title="{{ 'procurement.ocr.document'|trans }}">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Recognized Information -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ 'procurement.ocr.recognizedInfo'|trans }}</h5>
+                </div>
+                <div class="card-body">
+                    <form id="ocr-result-form">
+
+                        <!-- Document Type -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ 'procurement.ocr.documentType'|trans }}</label>
+                            <select class="form-select" name="documentType" id="ocr-document-type" required>
+                                <option value="delivery">{{ 'procurement.ocr.type.delivery'|trans }}</option>
+                                <option value="invoice">{{ 'procurement.ocr.type.invoice'|trans }}</option>
+                                <option value="order">{{ 'procurement.ocr.type.order'|trans }}</option>
+                            </select>
+                        </div>
+
+                        <!-- Document ID -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ 'procurement.ocr.documentId'|trans }}</label>
+                            <input type="text" class="form-control" name="documentId" id="ocr-document-id">
+                        </div>
+
+                        <!-- Document Date -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ 'procurement.ocr.documentDate'|trans }}</label>
+                            <input type="date" class="form-control" name="documentDate" id="ocr-document-date">
+                        </div>
+
+                        <!-- Third Party / Customer -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ 'procurement.ocr.customer'|trans }}</label>
+                            <div class="input-group">
+                                <select class="form-select" name="thirdPartyId" id="ocr-third-party-select">
+                                    <option value="">-- {{ 'procurement.ocr.selectCustomer'|trans }} --</option>
+                                </select>
+                            </div>
+                            <div class="form-text text-muted" id="ocr-third-party-recognized"></div>
+                        </div>
+
+                        <!-- Create New Third Party -->
+                        <div class="mb-3" id="new-third-party-section" style="display:none;">
+                            <div class="alert alert-warning">
+                                <strong>{{ 'procurement.ocr.customerNotFound'|trans }}</strong>
+                                <br>
+                                <small id="ocr-new-third-party-hint"></small>
+                            </div>
+                            <label class="form-label">{{ 'procurement.ocr.createCustomer'|trans }}</label>
+                            <input type="text" class="form-control" name="newThirdPartyName"
+                                   id="ocr-new-third-party-name"
+                                   placeholder="{{ 'procurement.ocr.customerName'|trans }}">
+                        </div>
+
+                        <!-- Related Document -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ 'procurement.ocr.relatedDocument'|trans }}</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="form-label small">{{ 'procurement.order'|trans }}</label>
+                                    <select class="form-select form-select-sm" name="relatedOrderId" id="ocr-related-order">
+                                        <option value="">-- {{ 'procurement.ocr.none'|trans }} --</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small">{{ 'procurement.invoice'|trans }}</label>
+                                    <select class="form-select form-select-sm" name="relatedInvoiceId" id="ocr-related-invoice">
+                                        <option value="">-- {{ 'procurement.ocr.none'|trans }} --</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lines -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ 'procurement.ocr.lines'|trans }}</label>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered" id="ocr-lines-table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>{{ 'procurement.productName'|trans }}</th>
+                                            <th>{{ 'procurement.menge'|trans }}</th>
+                                            <th>{{ 'procurement.unitPrice'|trans }}</th>
+                                            <th>VAT %</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ocr-lines-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    data-action="click->ocr-scanner#addLine">
+                                + {{ 'procurement.ocr.addLine'|trans }}
+                            </button>
+                        </div>
+
+                        <!-- Total -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ 'procurement.totalPrice'|trans }}</label>
+                            <input type="text" class="form-control" id="ocr-total" readonly>
+                        </div>
+
+                        <!-- Hidden fields -->
+                        <input type="hidden" name="mediaId" id="ocr-media-id">
+
+                        <!-- Submit -->
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-success"
+                                    data-action="click->ocr-scanner#submitDocument">
+                                {{ 'procurement.ocr.submit'|trans }}
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="row d-none mt-3" id="success-section">
+        <div class="col-12">
+            <div class="alert alert-success">
+                <strong>{{ 'procurement.ocr.success'|trans }}</strong>
+                <span id="success-message"></span>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

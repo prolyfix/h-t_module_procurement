@@ -7,6 +7,7 @@ use Prolyfix\HolidayAndTime\Entity\Module\ModuleRight;
 use Prolyfix\HolidayAndTime\Module\ModuleBundle;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use Prolyfix\ProcurementBundle\Entity\Calendar;
+use Prolyfix\ProcurementBundle\Entity\DeliverySlip;
 use Prolyfix\ProcurementBundle\Entity\Inventar;
 use Prolyfix\ProcurementBundle\Entity\Invoice;
 use Prolyfix\ProcurementBundle\Entity\Order;
@@ -32,6 +33,7 @@ class ProlyfixProcurementBundle extends ModuleBundle
             Receipt::class,
             ShoppingList::class,
             Inventar::class,
+            DeliverySlip::class,
         ];
     }
 
@@ -135,6 +137,8 @@ class ProlyfixProcurementBundle extends ModuleBundle
             MenuItem::linkToCrud('Products', 'fas fa-cart', Product::class),
             MenuItem::linkToCrud('Belege', 'fas fa-cart', Receipt::class),
             MenuItem::linkToCrud('Inventar', 'fas fa-cart', Inventar::class)->setAction('show'),
+            MenuItem::linkToCrud('Lieferscheine', 'fas fa-truck', DeliverySlip::class),
+            MenuItem::linkToRoute('OCR Scanner', 'fas fa-file-search', 'procurement_ocr_index'),
         ]];
     }
 

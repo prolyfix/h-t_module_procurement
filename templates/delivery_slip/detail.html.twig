@@ -1,0 +1,115 @@
+{% extends '@!EasyAdmin/page/content.html.twig' %}
+{% block main %}
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <h4 class="page-title">{% trans %}procurement.deliverySlip{% endtrans %}</h4>
+                <div class="page-title-right">
+                    <a class="action-index btn btn-secondary"
+                       href="/admin?crudAction=index&crudControllerFqcn=Prolyfix%5CProcurementBundle%5CController%5CDeliverySlipCrudController"
+                       data-action-name="index">
+                        <span class="action-label">{% trans %}back{% endtrans %}</span>
+                    </a>
+                    <a class="action-edit btn btn-primary"
+                       href="/admin?crudAction=edit&crudControllerFqcn=Prolyfix%5CProcurementBundle%5CController%5CDeliverySlipCrudController&entityId={{ entity.instance.id }}"
+                       data-action-name="edit">
+                        <span class="action-label">{% trans %}edit{% endtrans %}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+        <!-- Delivery Slip Info -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title font-16 mb-3">{% trans %}procurement.deliverySlipInfo{% endtrans %}</h4>
+                    <div class="mb-3">
+                        <h5 class="mt-0">{% trans %}procurement.deliverySlipId{% endtrans %}</h5>
+                        <p>{{ entity.instance.deliverySlipId ?? '-' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <h5 class="mt-0">{% trans %}procurement.deliveryDate{% endtrans %}</h5>
+                        <p>{{ entity.instance.deliveryDate ? entity.instance.deliveryDate|date('d.m.Y') : '-' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <h5 class="mt-0">{% trans %}State{% endtrans %}</h5>
+                        <p>{{ entity.instance.state ?? '-' }}</p>
+                    </div>
+                    {% if entity.instance.procurementOrder %}
+                        <div class="mb-3">
+                            <h5 class="mt-0">{% trans %}procurement.order{% endtrans %}</h5>
+                            <p>{{ entity.instance.procurementOrder }}</p>
+                        </div>
+                    {% endif %}
+                    {% if entity.instance.invoice %}
+                        <div class="mb-3">
+                            <h5 class="mt-0">{% trans %}procurement.invoice{% endtrans %}</h5>
+                            <p>{{ entity.instance.invoice.id }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Lines Table -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-centered mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans %}procurement.productName{% endtrans %}</th>
+                                    <th>{% trans %}procurement.menge{% endtrans %}</th>
+                                    <th>{% trans %}procurement.unitPrice{% endtrans %}</th>
+                                    <th>{% trans %}procurement.linePrice{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set total = 0 %}
+                                {% for line in entity.instance.deliverySlipLines %}
+                                    <tr>
+                                        <td>{{ line.description ?? (line.product ? line.product.name : '-') }}</td>
+                                        <td>{{ line.quantity }} {{ line.measure }}</td>
+                                        <td>{{ line.grossPrice|number_format(2, '.', ',') }} €</td>
+                                        <td>{{ line.price|number_format(2, '.', ',') }} €</td>
+                                        {% set total = total + line.price %}
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <th scope="row" colspan="3" class="text-end">
+                                        {% trans %}procurement.totalPrice{% endtrans %}:
+                                    </th>
+                                    <td>
+                                        <div class="fw-bold">{{ total|number_format(2, '.', ',') }} €</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supplier Info -->
+    {% if entity.instance.thirdParty %}
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title font-16 mb-3">{% trans %}Lieferant{% endtrans %}</h4>
+                        <h5 class="font-family-primary fw-semibold">{{ entity.instance.thirdParty.name }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
