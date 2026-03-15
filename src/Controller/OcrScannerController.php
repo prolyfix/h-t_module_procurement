@@ -3,6 +3,8 @@
 namespace Prolyfix\ProcurementBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\HttpFactory;
 use Prolyfix\CrmBundle\Entity\ThirdParty;
 use Prolyfix\HolidayAndTime\Entity\Media;
 use Prolyfix\ProcurementBundle\Entity\DeliverySlip;
@@ -10,6 +12,8 @@ use Prolyfix\ProcurementBundle\Entity\DeliverySlipLine;
 use Prolyfix\ProcurementBundle\Entity\Invoice;
 use Prolyfix\ProcurementBundle\Entity\Order;
 use Prolyfix\ProcurementBundle\Form\ParserType;
+use Smalot\PdfParser\Parser;
+use SoftCreatR\MistralAI\MistralAI;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -82,10 +86,8 @@ class OcrScannerController extends AbstractCrudController
             return new JsonResponse(['error' => 'File not found after upload'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $mistralApiKey = $this->getParameter('mistral_api_key');
-
         try {
-            $result = $this->analyzeWithMistral($filePath, $mistralApiKey);
+            $result = $this->analyzeWithMistral($filePath);
         } catch (\Throwable $e) {
             return new JsonResponse(['error' => 'AI analysis failed: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -208,9 +210,17 @@ class OcrScannerController extends AbstractCrudController
         ]);
     }
 
-    private function analyzeWithMistral(string $filePath, string $apiKey): array
+    private function analyzeWithMistral(string $filePath): array
     {
-        $pdfContent = base64_encode(file_get_contents($filePath));
+        $apiKey = trim((string) ($_ENV['MISTRAL_API_KEY'] ?? $_SERVER['MISTRAL_API_KEY'] ?? ''));
+        if ($apiKey === '') {
+            throw new \RuntimeException('MISTRAL_API_KEY is not configured');
+        }
+
+        $pdfText = $this->extractPdfText($filePath);
+        if ($pdfText === '') {
+            throw new \RuntimeException('The uploaded PDF does not contain extractable text. Please upload a text-based PDF.');
+        }
 
         $prompt = <<<PROMPT
 You are a document analysis assistant. Analyze the provided PDF document and extract the following information in JSON format:
@@ -238,50 +248,32 @@ PROMPT;
             'messages' => [
                 [
                     'role'    => 'user',
-                    'content' => [
-                        [
-                            'type' => 'text',
-                            'text' => $prompt,
-                        ],
-                        [
-                            'type'      => 'image_url',
-                            'image_url' => [
-                                'url' => 'data:application/pdf;base64,' . $pdfContent,
-                            ],
-                        ],
-                    ],
+                    'content' => $prompt . "\n\nDocument text:\n" . mb_substr($pdfText, 0, 50000),
                 ],
             ],
             'response_format' => ['type' => 'json_object'],
         ];
 
-        $ch = curl_init('https://api.mistral.ai/v1/chat/completions');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $apiKey,
-            ],
-            CURLOPT_POSTFIELDS     => json_encode($payload),
-            CURLOPT_TIMEOUT        => 60,
-        ]);
+        $httpFactory = new HttpFactory();
+        $mistral = new MistralAI(
+            $httpFactory,
+            $httpFactory,
+            $httpFactory,
+            new Client(),
+            $apiKey,
+        );
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
-        curl_close($ch);
-
-        if ($curlError) {
-            throw new \RuntimeException('cURL error: ' . $curlError);
+        $response = $mistral->createChatCompletion([], $payload);
+        if ($response === null || $response->getStatusCode() >= 300) {
+            throw new \RuntimeException('Mistral API returned HTTP ' . ($response?->getStatusCode() ?? 0));
         }
 
-        if ($httpCode !== 200) {
-            throw new \RuntimeException('Mistral API returned HTTP ' . $httpCode . ': ' . $response);
-        }
-
-        $apiResult = json_decode($response, true);
+        $apiResult = json_decode((string) $response->getBody(), true);
         $content   = $apiResult['choices'][0]['message']['content'] ?? '{}';
+
+        if (\is_array($content)) {
+            $content = implode('', array_map(static fn ($item) => (string) ($item['text'] ?? ''), $content));
+        }
 
         $extracted = json_decode($content, true);
 
@@ -290,5 +282,13 @@ PROMPT;
         }
 
         return $extracted;
+    }
+
+    private function extractPdfText(string $filePath): string
+    {
+        $parser = new Parser();
+        $pdf = $parser->parseFile($filePath);
+
+        return trim($pdf->getText());
     }
 }
