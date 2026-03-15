@@ -123,7 +123,7 @@
 									{% for item in entity.instance.orderLines %}
 										<tr>
 											<th scope="row">{{item.product.name}}</th>
-											<td>{% include 'admin/common/_avatar.html.twig' with {entity:item.product} %}</td>
+											<td>{% include '@ProlyfixHolidayAndTime/admin/common/_avatar.html.twig' with {entity:item.product} %}</td>
 											<td>{{item.quantity}}</td>
 											<td>{{item.grossPrice | number_format(2,".",",")}}
 												€</td>
