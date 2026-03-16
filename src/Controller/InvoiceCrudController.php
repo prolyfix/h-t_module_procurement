@@ -21,6 +21,19 @@ class InvoiceCrudController extends BaseCrudController
         return Invoice::class;
     }
 
+    public function configureFields(string $pageName): iterable
+    {
+        yield IdField::new('id')->hideOnForm();
+        yield BooleanField::new('isPaid', 'Bezahlt');
+
+        if (class_exists('Prolyfix\BankingBundle\Entity\Entry')) {
+            yield IntegerField::new('bankingEntryId', 'Banking-Eintrag (ID)')
+                ->setHelp('ID des zugehörigen Bankbuchungs-Eintrags')
+                ->setRequired(false);
+        }
+    }
+
+
     public function configureCrud(Crud $crud): Crud
     {
         return $crud->overrideTemplates([
@@ -53,14 +66,4 @@ class InvoiceCrudController extends BaseCrudController
             'form' => $form->createView(),
         ]);
     }
-    /*
-    public function configureFields(string $pageName): iterable
-    {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
-    }
-    */
 }

@@ -19,6 +19,9 @@ class Invoice extends TimeData
     #[ORM\Column(nullable: true)]
     private ?bool $isPaid = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $bankingEntryId = null;
+
     /**
      * @var Collection<int, InvoiceLine>
      */
@@ -59,6 +62,28 @@ class Invoice extends TimeData
         $this->isPaid = $isPaid;
 
         return $this;
+    }
+
+    public function getBankingEntryId(): ?int
+    {
+        return $this->bankingEntryId;
+    }
+
+    public function setBankingEntryId(?int $bankingEntryId): static
+    {
+        $this->bankingEntryId = $bankingEntryId;
+
+        return $this;
+    }
+
+    public function getTotal(): float
+    {
+        $total = 0.0;
+        foreach ($this->orders as $order) {
+            $total += $order->getPrice();
+        }
+
+        return $total;
     }
 
     /**
