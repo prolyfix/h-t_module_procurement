@@ -98,18 +98,40 @@
         </div>
     </div>
 
-    <!-- Supplier Info -->
-    {% if entity.instance.thirdParty %}
-        <div class="row">
-            <div class="col-lg-4">
+    <div class="row">
+        <div class="col-lg-4">
+            {% if entity.instance.thirdParty %}
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title font-16 mb-3">{% trans %}Lieferant{% endtrans %}</h4>
                         <h5 class="font-family-primary fw-semibold">{{ entity.instance.thirdParty.name }}</h5>
+
+                        {% if entity.instance.thirdParty.location %}
+                            <p class="mb-2">
+                                <span class="fw-semibold me-2">Address:</span>
+                                {{ entity.instance.thirdParty.location.street }} |
+                                {{ entity.instance.thirdParty.location.zipCode }}
+                                {{ entity.instance.thirdParty.location.city }}
+                            </p>
+                        {% endif %}
+                        <p class="mb-2"><span class="fw-semibold me-2">Phone:</span>{{ entity.instance.thirdParty.phone }}</p>
+                        <p class="mb-0"><span class="fw-semibold me-2">E-mail:</span>{{ entity.instance.thirdParty.email }}</p>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
-    {% endif %}
+
+        <div class="col-lg-4">
+            {% include '@ProlyfixHolidayAndTime/admin/media/_mediaSidebar.html.twig' with {'entity': entity, 'choices': {'invoice':'invoice','lieferschein':'lieferschein'}} %}
+        </div>
+
+        <div class="col-lg-4">
+            {% include '@ProlyfixProcurement/_includes/_related_documents.html.twig' with {
+                title: 'Related Documents',
+                invoices: entity.instance.invoice ? [entity.instance.invoice] : [],
+                orders: entity.instance.procurementOrder ? [entity.instance.procurementOrder] : []
+            } %}
+        </div>
+    </div>
 </div>
 {% endblock %}

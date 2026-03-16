@@ -1,0 +1,53 @@
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title font-16 mb-3">{{ title|default('Related Documents') }}</h4>
+
+        {% set hasAny = false %}
+
+        {% if invoices is defined and invoices|length > 0 %}
+            {% set hasAny = true %}
+            <h5 class="mt-0">{% trans %}procurement.invoice{% endtrans %}</h5>
+            <ul class="list-unstyled mb-3">
+                {% for invoice in invoices %}
+                    <li class="mb-1">
+                        <a href="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\InvoiceCrudController').setAction('detail').setEntityId(invoice.id).generateUrl() }}">
+                            {{ invoice }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if orders is defined and orders|length > 0 %}
+            {% set hasAny = true %}
+            <h5 class="mt-0">{% trans %}procurement.order{% endtrans %}</h5>
+            <ul class="list-unstyled mb-3">
+                {% for order in orders %}
+                    <li class="mb-1">
+                        <a href="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\OrderCrudController').setAction('detail').setEntityId(order.id).generateUrl() }}">
+                            {{ order }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if deliverySlips is defined and deliverySlips|length > 0 %}
+            {% set hasAny = true %}
+            <h5 class="mt-0">{% trans %}procurement.deliverySlip{% endtrans %}</h5>
+            <ul class="list-unstyled mb-0">
+                {% for deliverySlip in deliverySlips %}
+                    <li class="mb-1">
+                        <a href="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\DeliverySlipCrudController').setAction('detail').setEntityId(deliverySlip.id).generateUrl() }}">
+                            {{ deliverySlip }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if not hasAny %}
+            <p class="text-muted mb-0">-</p>
+        {% endif %}
+    </div>
+</div>

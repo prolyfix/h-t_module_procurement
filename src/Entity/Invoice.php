@@ -2,13 +2,14 @@
 
 namespace Prolyfix\ProcurementBundle\Entity;
 
+use Prolyfix\HolidayAndTime\Entity\TimeData;
 use Prolyfix\ProcurementBundle\Repository\InvoiceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
-class Invoice
+class Invoice extends TimeData
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -147,6 +148,11 @@ class Invoice
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+       return 'Invoice #' . $this->id;
     }
 
 }

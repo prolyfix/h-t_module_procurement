@@ -35,6 +35,7 @@ class ProlyfixProcurementBundle extends ModuleBundle
             ShoppingList::class,
             Inventar::class,
             DeliverySlip::class,
+            Invoice::class,
         ];
     }
 

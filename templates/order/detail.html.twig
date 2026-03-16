@@ -181,6 +181,13 @@
 			<div class="col-lg-4">
 				{% include '@ProlyfixHolidayAndTime/admin/media/_mediaSidebar.html.twig' with {'entity': entity,'choices':{'invoice':'invoice','lieferschein':'lieferschein'}} %}
 			</div>
+			<div class="col-lg-4">
+				{% include '@ProlyfixProcurement/_includes/_related_documents.html.twig' with {
+					title: 'Related Documents',
+					invoices: entity.instance.invoice ? [entity.instance.invoice] : [],
+					deliverySlips: entity.instance.deliverySlips
+				} %}
+			</div>
 		</div>
 		<!-- end row -->
 

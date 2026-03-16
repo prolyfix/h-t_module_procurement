@@ -1,0 +1,34 @@
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-centered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>{% trans %}procurement.order{% endtrans %}</th>
+                        <th>{% trans %}procurement.orderId{% endtrans %}</th>
+                        <th>{% trans %}procurement.deliveryDate{% endtrans %}</th>
+                        <th>{% trans %}procurement.totalPrice{% endtrans %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in entity.instance.orders %}
+                        <tr>
+                            <td>
+                                <a href="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\OrderCrudController').setAction('detail').setEntityId(order.id).generateUrl() }}">
+                                    {{ order }}
+                                </a>
+                            </td>
+                            <td>{{ order.orderId ?? '-' }}</td>
+                            <td>{{ order.deliveryDate ? order.deliveryDate|date('d.m.Y') : '-' }}</td>
+                            <td>{{ order.price|number_format(2,'.',',') }} EUR</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-muted">-</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

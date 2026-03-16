@@ -1,0 +1,40 @@
+{% extends '@!EasyAdmin/page/content.html.twig' %}
+
+{% block main %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h4 class="page-title">{% trans %}procurement.invoice{% endtrans %}</h4>
+                    <div class="page-title-right">
+                        <a class="action-index btn btn-secondary" href="/admin?crudAction=index&crudControllerFqcn=Prolyfix%5CProcurementBundle%5CController%5CInvoiceCrudController" data-action-name="index">
+                            <span class="action-label">{% trans %}back{% endtrans %}</span>
+                        </a>
+                        <a class="action-edit btn btn-primary" href="/admin?crudAction=edit&crudControllerFqcn=Prolyfix%5CProcurementBundle%5CController%5CInvoiceCrudController&entityId={{ entity.instance.id }}" data-action-name="edit">
+                            <span class="action-label">{% trans %}edit{% endtrans %}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                {% include '@ProlyfixProcurement/invoice/_summary.html.twig' %}
+            </div>
+            <div class="col-lg-8">
+                {% include '@ProlyfixProcurement/invoice/_orders_table.html.twig' %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                {% include '@ProlyfixProcurement/_includes/_related_documents.html.twig' with {
+                    title: 'Related Documents',
+                    orders: entity.instance.orders,
+                    deliverySlips: entity.instance.deliverySlips
+                } %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

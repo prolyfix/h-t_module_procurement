@@ -3,6 +3,7 @@
 namespace Prolyfix\ProcurementBundle\Controller;
 
 use Prolyfix\HolidayAndTime\Controller\Admin\BaseCrudController;
+use Prolyfix\HolidayAndTime\Form\MediaType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
@@ -62,5 +63,14 @@ class DeliverySlipCrudController extends BaseCrudController
                 ->hideOnIndex(),
             NumberField::new('price')->hideOnForm(),
         ];
+    }
+
+    public function detail(AdminContext $context)
+    {
+        $response = parent::detail($context);
+        $mediForm = $this->createForm(MediaType::class);
+        $response->set('media_form', $mediForm->createView());
+
+        return $response;
     }
 }

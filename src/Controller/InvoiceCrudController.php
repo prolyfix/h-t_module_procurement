@@ -3,26 +3,31 @@
 namespace Prolyfix\ProcurementBundle\Controller;
 
 use Prolyfix\HolidayAndTime\Entity\Media;
-use Doctrine\ORM\EntityManager;
+use Prolyfix\HolidayAndTime\Controller\Admin\BaseCrudController;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use Prolyfix\ProcurementBundle\Entity\Invoice;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Prolyfix\ProcurementBundle\Form\ParserType;
 use Symfony\Component\HttpFoundation\Request;
 use Mindee\Client;
 use Mindee\Product\Invoice\InvoiceV4;
 
 
-class InvoiceCrudController extends AbstractCrudController
+class InvoiceCrudController extends BaseCrudController
 {
     public static function getEntityFqcn(): string
     {
         return Invoice::class;
     }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud->overrideTemplates([
+            'crud/detail' => '@ProlyfixProcurement/invoice/detail.html.twig',
+        ]);
+    }
+
     public function parseDoc(AdminContext $context, Request $request, EntityManagerInterface $em)
     {
         $media = new Media();
