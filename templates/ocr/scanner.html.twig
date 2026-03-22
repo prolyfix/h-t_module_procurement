@@ -4,7 +4,7 @@
 <div class="container-fluid" data-controller="ocr-scanner"
     data-ocr-scanner-upload-url-value="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\OcrScannerController').setAction('upload') }}"
     data-ocr-scanner-submit-url-value="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\OcrScannerController').setAction('submit') }}"
-    data-ocr-scanner-pdf-base-url-value="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\OcrScannerController').setAction('servePdf').set('id', '__ID__') }}">
+    data-ocr-scanner-pdf-base-url-value="{{ path('procurement_ocr_serve_pdf', {id: '__ID__'}) }}">
 
     <!-- Page Title -->
     <div class="row">

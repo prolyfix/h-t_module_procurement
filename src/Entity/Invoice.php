@@ -3,6 +3,7 @@
 namespace Prolyfix\ProcurementBundle\Entity;
 
 use Prolyfix\HolidayAndTime\Entity\TimeData;
+use Prolyfix\HolidayAndTime\Entity\Media;
 use Prolyfix\ProcurementBundle\Repository\InvoiceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,12 +21,18 @@ class Invoice extends TimeData
     private ?bool $isPaid = null;
 
     #[ORM\Column(nullable: true)]
+    private ?float $totalAmount = null;
+
+    #[ORM\Column(nullable: true)]
     private ?int $bankingEntryId = null;
+
+    #[ORM\ManyToOne]
+    private ?Media $sourceDocument = null;
 
     /**
      * @var Collection<int, InvoiceLine>
      */
-    #[ORM\OneToMany(targetEntity: InvoiceLine::class, mappedBy: 'invoice')]
+    #[ORM\OneToMany(targetEntity: InvoiceLine::class, mappedBy: 'invoice', cascade: ['persist', 'remove'])]
     private Collection $invoiceLines;
 
     /**
@@ -64,6 +71,18 @@ class Invoice extends TimeData
         return $this;
     }
 
+    public function getTotalAmount(): ?float
+    {
+        return $this->totalAmount;
+    }
+
+    public function setTotalAmount(?float $totalAmount): static
+    {
+        $this->totalAmount = $totalAmount;
+
+        return $this;
+    }
+
     public function getBankingEntryId(): ?int
     {
         return $this->bankingEntryId;
@@ -72,6 +91,18 @@ class Invoice extends TimeData
     public function setBankingEntryId(?int $bankingEntryId): static
     {
         $this->bankingEntryId = $bankingEntryId;
+
+        return $this;
+    }
+
+    public function getSourceDocument(): ?Media
+    {
+        return $this->sourceDocument;
+    }
+
+    public function setSourceDocument(?Media $sourceDocument): static
+    {
+        $this->sourceDocument = $sourceDocument;
 
         return $this;
     }

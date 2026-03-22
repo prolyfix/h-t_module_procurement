@@ -192,6 +192,7 @@ export default class extends Controller {
             relatedOrderId:   formData.get('relatedOrderId'),
             relatedInvoiceId: formData.get('relatedInvoiceId'),
             mediaId:          formData.get('mediaId'),
+            totalAmount:      document.getElementById('ocr-total')?.value || null,
             lines:            this.lines,
         };
 

@@ -10,6 +10,7 @@ use Prolyfix\HolidayAndTime\Entity\Media;
 use Prolyfix\ProcurementBundle\Entity\DeliverySlip;
 use Prolyfix\ProcurementBundle\Entity\DeliverySlipLine;
 use Prolyfix\ProcurementBundle\Entity\Invoice;
+use Prolyfix\ProcurementBundle\Entity\InvoiceLine;
 use Prolyfix\ProcurementBundle\Entity\Order;
 use Prolyfix\ProcurementBundle\Form\ParserType;
 use Smalot\PdfParser\Parser;
@@ -33,8 +34,11 @@ class OcrScannerController extends AbstractCrudController
         return Media::class;
     }
 
+    #[\Symfony\Component\Routing\Annotation\Route('/pdf/{id}', name: 'serve_pdf', methods: ['GET'])]
     public function servePdf(int $id): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $media = $this->em->getRepository(Media::class)->find($id);
 
         if ($media === null) {
@@ -173,14 +177,30 @@ class OcrScannerController extends AbstractCrudController
 
             case 'invoice':
                 $entity = new Invoice();
-                if ($thirdParty !== null) {
-                    // Invoice does not yet have a direct thirdParty field; set via related order if available
-                }
                 if (!empty($data['relatedOrderId'])) {
                     $order = $this->em->getRepository(Order::class)->find($data['relatedOrderId']);
                     if ($order !== null) {
                         $entity->addOrder($order);
                     }
+                }
+                if (!empty($data['totalAmount'])) {
+                    $entity->setTotalAmount((float) $data['totalAmount']);
+                }
+                if (!empty($data['mediaId'])) {
+                    $media = $this->em->getRepository(Media::class)->find($data['mediaId']);
+                    if ($media !== null) {
+                        $entity->setSourceDocument($media);
+                    }
+                }
+                foreach ($lines as $lineData) {
+                    $line = new InvoiceLine();
+                    $line->setDescription($lineData['description'] ?? null);
+                    $line->setQuantity(isset($lineData['quantity']) ? (float) $lineData['quantity'] : null);
+                    $line->setMeasure($lineData['measure'] ?? null);
+                    $line->setGrossPrice(isset($lineData['grossPrice']) ? (float) $lineData['grossPrice'] : null);
+                    $line->setNetPrice(isset($lineData['netPrice']) ? (float) $lineData['netPrice'] : null);
+                    $line->setVat(isset($lineData['vat']) ? (float) $lineData['vat'] : null);
+                    $entity->addInvoiceLine($line);
                 }
                 $this->em->persist($entity);
                 break;
@@ -223,13 +243,22 @@ class OcrScannerController extends AbstractCrudController
         }
 
         $prompt = <<<PROMPT
-You are a document analysis assistant. Analyze the provided PDF document and extract the following information in JSON format:
+You are a document analysis assistant specializing in procurement documents (incoming invoices, delivery slips, and purchase orders).
+
+IMPORTANT CONTEXT: These documents are received FROM an external supplier/vendor BY a company. The document always contains two parties:
+- The ISSUER (sender): the external supplier/vendor who wrote and sent this document. This is the party we need.
+- The RECIPIENT (receiver): the company that received the document (our client's own company). IGNORE this party.
+
+The "thirdPartyName" and "thirdPartyAddress" MUST be the ISSUER (the external supplier/vendor who sent the document), NOT the recipient address.
+Typically the issuer is shown at the top of the document or in the "From:" section. The recipient appears in "To:", "Bill To:", "Deliver To:" sections — do NOT use those.
+
+Analyze the provided document and extract the following information in JSON format:
 
 1. "documentType": one of "invoice", "order", or "delivery"
 2. "documentId": the document reference/ID number if found
 3. "documentDate": the document date in YYYY-MM-DD format if found
-4. "thirdPartyName": the customer or supplier name
-5. "thirdPartyAddress": the customer or supplier address
+4. "thirdPartyName": the ISSUER/SENDER name (i.e. the supplier or vendor who issued this document, NOT the recipient)
+5. "thirdPartyAddress": the ISSUER/SENDER address (same rule: the supplier's address, NOT the recipient's)
 6. "relatedDocumentId": any referenced document number (e.g., order number on an invoice)
 7. "lines": an array of line items, each with:
    - "description": item description

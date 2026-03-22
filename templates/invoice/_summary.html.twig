@@ -16,5 +16,12 @@
             <h5 class="mt-0">{% trans %}procurement.order{% endtrans %}</h5>
             <p>{{ entity.instance.orders|length }}</p>
         </div>
+
+        {% if entity.instance.totalAmount is not null %}
+        <div class="mb-0">
+            <h5 class="mt-0">{% trans %}procurement.totalPrice{% endtrans %}</h5>
+            <p class="fw-bold">{{ entity.instance.totalAmount|number_format(2, '.', ' ') }} €</p>
+        </div>
+        {% endif %}
     </div>
 </div>

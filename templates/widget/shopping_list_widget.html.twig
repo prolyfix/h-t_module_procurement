@@ -7,13 +7,13 @@
     <form data-action="submit->procurement#addToShoppingList">
       <div class="row">
         <div class="col-2">
-          <input type="number" id="shopping_list_quantity" class="form-control" placeholder="Quantity" />
+          <input type="number" id="shopping_list_quantity" class="form-control" placeholder="{{ 'shopping_list.quantity'|trans }}" />
         </div>
         <div class="col-8">
-          <input type="text" id="shopping_list_name" class="form-control" placeholder="Item" />
+          <input type="text" id="shopping_list_name" class="form-control" placeholder="{{ 'shopping_list.item'|trans }}" />
         </div>
         <div class="col-2">
-          <input type="submit" class="btn btn-primary" value="Add" data-action="click->procurement#addToShoppingList" />
+          <input type="submit" class="btn btn-primary" value="{{ 'shopping_list.add'|trans }}" data-action="click->procurement#addToShoppingList" />
         </div>
       </div>
     </form>

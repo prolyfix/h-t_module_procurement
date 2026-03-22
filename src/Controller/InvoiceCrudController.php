@@ -7,6 +7,11 @@ use Prolyfix\HolidayAndTime\Controller\Admin\BaseCrudController;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Prolyfix\ProcurementBundle\Entity\Invoice;
 use Prolyfix\ProcurementBundle\Form\ParserType;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +28,37 @@ class InvoiceCrudController extends BaseCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        if ($pageName === Crud::PAGE_INDEX) {
+            yield IdField::new('id');
+            yield TextField::new('supplierName', 'Supplier')
+                ->formatValue(static function ($value, Invoice $invoice) {
+                    foreach ($invoice->getOrders() as $order) {
+                        if ($order->getThirdParty() !== null && $order->getThirdParty()->getName() !== null) {
+                            return $order->getThirdParty()->getName();
+                        }
+                    }
+
+                    return '-';
+                })
+                ->onlyOnIndex();
+            yield MoneyField::new('totalAmount', 'Amount')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false)
+                ->formatValue(static function ($value, Invoice $invoice) {
+                    return $invoice->getTotalAmount() ?? $invoice->getTotal();
+                });
+            yield IntegerField::new('itemsCount', 'Items')
+                ->formatValue(static fn ($value, Invoice $invoice) => $invoice->getInvoiceLines()->count())
+                ->onlyOnIndex();
+            yield BooleanField::new('isPaid', 'Bezahlt');
+
+            return;
+        }
+
         yield IdField::new('id')->hideOnForm();
+        yield MoneyField::new('totalAmount', 'Amount')
+            ->setCurrency('EUR')
+            ->setStoredAsCents(false);
         yield BooleanField::new('isPaid', 'Bezahlt');
 
         if (class_exists('Prolyfix\BankingBundle\Entity\Entry')) {

@@ -22,8 +22,29 @@
             <div class="col-lg-4">
                 {% include '@ProlyfixProcurement/invoice/_summary.html.twig' %}
             </div>
-            <div class="col-lg-8">
+            <div class="col-lg-{% if entity.instance.sourceDocument %}4{% else %}8{% endif %}">
                 {% include '@ProlyfixProcurement/invoice/_orders_table.html.twig' %}
+            </div>
+            {% if entity.instance.sourceDocument %}
+            <div class="col-lg-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">{% trans %}procurement.ocr.document{% endtrans %}</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <iframe src="{{ path('procurement_ocr_serve_pdf', {id: entity.instance.sourceDocument.id}) }}"
+                                style="width:100%; height:500px; border:none;"
+                                title="Invoice document">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-12">
+                {% include '@ProlyfixProcurement/invoice/_lines_table.html.twig' %}
             </div>
         </div>
 

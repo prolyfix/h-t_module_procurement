@@ -1,0 +1,39 @@
+{% if entity.instance.invoiceLines|length > 0 %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">{% trans %}procurement.lines{% endtrans %}</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-centered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>{% trans %}procurement.productName{% endtrans %}</th>
+                        <th>{% trans %}procurement.menge{% endtrans %}</th>
+                        <th>{% trans %}procurement.unitPrice{% endtrans %}</th>
+                        <th>VAT %</th>
+                        <th>{% trans %}procurement.totalPrice{% endtrans %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for line in entity.instance.invoiceLines %}
+                        <tr>
+                            <td>{{ line.description ?? '-' }}</td>
+                            <td>{{ line.quantity ?? '-' }} {{ line.measure }}</td>
+                            <td>{{ line.grossPrice is not null ? line.grossPrice|number_format(2, '.', ' ') ~ ' €' : '-' }}</td>
+                            <td>{{ line.vat is not null ? line.vat ~ ' %' : '-' }}</td>
+                            <td>
+                                {% if line.quantity is not null and line.grossPrice is not null %}
+                                    {{ (line.quantity * line.grossPrice)|number_format(2, '.', ' ') }} €
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
