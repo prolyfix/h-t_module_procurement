@@ -135,6 +135,7 @@ class ProlyfixProcurementBundle extends ModuleBundle
         return ['Procurement' => [
             MenuItem::section('Einkauf', 'fas fa-dollar-sign'),
             MenuItem::linkToCrud('Bestellungen', 'fas fa-cart', Order::class),
+            MenuItem::linkToCrud('Order / Delivered / Invoiced / Paid', 'fas fa-columns', Order::class)->setAction('board'),
             MenuItem::linkToCrud('Invoice', 'fas fa-cart', Invoice::class),
             MenuItem::linkToCrud('Products', 'fas fa-cart', Product::class),
             MenuItem::linkToCrud('Belege', 'fas fa-cart', Receipt::class),

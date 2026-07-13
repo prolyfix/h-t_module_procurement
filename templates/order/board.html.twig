@@ -1,0 +1,66 @@
+{% extends '@!EasyAdmin/page/content.html.twig' %}
+
+{% set boardColumns = [
+    { key: 'order', title: 'Order', icon: 'mdi mdi-cart-outline', badgeClass: 'bg-primary-subtle text-primary' },
+    { key: 'delivered', title: 'Delivered', icon: 'mdi mdi-truck-delivery-outline', badgeClass: 'bg-info-subtle text-info' },
+    { key: 'invoiced', title: 'Invoiced', icon: 'mdi mdi-file-document-outline', badgeClass: 'bg-warning-subtle text-warning' },
+    { key: 'paid', title: 'Paid', icon: 'mdi mdi-cash-check', badgeClass: 'bg-success-subtle text-success' },
+] %}
+
+{% block content_title %}
+    Order / Delivered / Invoiced / Paid
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid procurement-board">
+        <div class="row g-3 align-items-stretch">
+            {% for column in boardColumns %}
+                {% set cards = columns[column.key] ?? [] %}
+                <div class="col-12 col-md-6 col-xxl-3 d-flex">
+                    <section class="card border-0 shadow-sm w-100 h-100">
+                        <div class="card-header bg-transparent border-0 pb-0 pt-3 px-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge rounded-pill {{ column.badgeClass }} mb-2">
+                                    <i class="{{ column.icon }} me-1"></i>{{ column.title }}
+                                </span>
+                                <h5 class="mb-0">{{ column.title }}</h5>
+                            </div>
+                            <span class="badge bg-light text-dark">{{ cards|length }}</span>
+                        </div>
+                        <div class="card-body pt-3 d-flex flex-column gap-3">
+                            {% if cards is empty %}
+                                <div class="border rounded-3 p-3 text-muted small bg-light-subtle">
+                                    No documents in this column.
+                                </div>
+                            {% endif %}
+
+                            {% for card in cards %}
+                                <article class="border rounded-3 p-3 bg-white shadow-sm h-100">
+                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                        <div>
+                                            <div class="fw-semibold">{{ card.reference }}</div>
+                                            <div class="text-muted small">{{ card.thirdParty ?: '-' }}</div>
+                                        </div>
+                                        <span class="badge bg-light text-dark text-uppercase">{{ card.status }}</span>
+                                    </div>
+
+                                    {% if card.amount is not null %}
+                                        <div class="fw-bold mb-2">{{ card.amount|number_format(2, '.', ',') }} €</div>
+                                    {% endif %}
+
+                                    <div class="small text-muted mb-3">
+                                        {{ card.items is not empty ? card.items|join(' | ') : '-' }}
+                                    </div>
+
+                                    <a href="{{ card.detailUrl }}" class="btn btn-sm btn-outline-secondary w-100">
+                                        Open details
+                                    </a>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </section>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
