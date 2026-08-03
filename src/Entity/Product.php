@@ -66,6 +66,9 @@ class Product extends Commentable
     #[ORM\Column(nullable: true)]
     private ?bool $hasPeremption = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $price = null;
+
     #[ORM\Column]
     private ?float $minimalQuantity = null;
 
@@ -256,6 +259,18 @@ class Product extends Commentable
     public function setHasPeremption(?bool $hasPeremption): static
     {
         $this->hasPeremption = $hasPeremption;
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?float $price): static
+    {
+        $this->price = $price;
 
         return $this;
     }

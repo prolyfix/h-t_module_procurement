@@ -5,6 +5,8 @@ namespace Prolyfix\ProcurementBundle\Controller;
 use Prolyfix\HolidayAndTime\Entity\Media;
 use Prolyfix\HolidayAndTime\Controller\Admin\BaseCrudController;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -12,9 +14,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Knp\Snappy\Pdf;
 use Prolyfix\ProcurementBundle\Entity\Invoice;
 use Prolyfix\ProcurementBundle\Form\ParserType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Mindee\Client;
 use Mindee\Product\Invoice\InvoiceV4;
 
@@ -74,6 +79,38 @@ class InvoiceCrudController extends BaseCrudController
         return $crud->overrideTemplates([
             'crud/detail' => '@ProlyfixProcurement/invoice/detail.html.twig',
         ]);
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $downloadPdfAction = Action::new('downloadPdf', 'PDF')
+            ->setIcon('fa fa-file-pdf')
+            ->linkToCrudAction('downloadPdf');
+
+        return parent::configureActions($actions)
+            ->add(Crud::PAGE_INDEX, $downloadPdfAction)
+            ->add(Crud::PAGE_DETAIL, $downloadPdfAction);
+    }
+
+    public function downloadPdf(AdminContext $context, Pdf $knpSnappyPdf): Response
+    {
+        $this->assertListAccessForEntity(Invoice::class, 'You are not allowed to download this invoice.');
+
+        $invoice = $context->getEntity()->getInstance();
+        if (!$invoice instanceof Invoice) {
+            throw $this->createNotFoundException('Invoice not found.');
+        }
+
+        $html = $this->renderView('@ProlyfixProcurement/invoice/pdf.html.twig', [
+            'invoice' => $invoice,
+        ]);
+
+        return new PdfResponse(
+            $knpSnappyPdf->getOutputFromHtml($html),
+            sprintf('invoice-%d.pdf', $invoice->getId()),
+            'application/pdf',
+            'attachment'
+        );
     }
 
     public function parseDoc(AdminContext $context, Request $request, EntityManagerInterface $em)

@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
@@ -38,6 +39,7 @@ class ProductCrudController extends BaseCrudController
             TextField::new('name'),
             TextareaField::new('description')->hideOnIndex(),
             ImageField::new('avatarFilename')->setUploadDir('public/uploads/avatar')->setBasePath('uploads/avatar')->setCssClass('index_avatar')  ,
+            MoneyField::new('price')->setCurrency('EUR')->setStoredAsCents(false),
             BooleanField::new('isSprechstundenbedarf'),
             BooleanField::new('hasPeremption'),
             NumberField::new('minimalQuantity'),

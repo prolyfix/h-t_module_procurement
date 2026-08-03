@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ invoice.id }}</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+            color: #222;
+            margin: 24px;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin: 0 0 12px;
+        }
+
+        .meta {
+            margin-bottom: 16px;
+        }
+
+        .meta-row {
+            margin: 2px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th,
+        td {
+            border: 1px solid #d9d9d9;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f3f3f3;
+            font-weight: 700;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .totals {
+            margin-top: 16px;
+            width: 320px;
+            margin-left: auto;
+        }
+
+        .totals td {
+            border: none;
+            padding: 4px 0;
+        }
+
+        .totals .label {
+            color: #555;
+        }
+
+        .totals .value {
+            font-weight: 700;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>Invoice #{{ invoice.id }}</h1>
+
+    <div class="meta">
+        <div class="meta-row">Created: {{ invoice.creationDate ? invoice.creationDate|date('d.m.Y') : '-' }}</div>
+        <div class="meta-row">Status: {{ invoice.isPaid ? 'Paid' : 'Open' }}</div>
+        <div class="meta-row">Orders linked: {{ invoice.orders|length }}</div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th class="text-right">Unit Price</th>
+                <th class="text-right">VAT</th>
+                <th class="text-right">Line Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set computedTotal = 0 %}
+            {% for line in invoice.invoiceLines %}
+                {% set qty = line.quantity ?? 0 %}
+                {% set gross = line.grossPrice ?? 0 %}
+                {% set lineTotal = qty * gross %}
+                {% set computedTotal = computedTotal + lineTotal %}
+                <tr>
+                    <td>{{ line.description ?? '-' }}</td>
+                    <td>{{ line.quantity ?? '-' }}</td>
+                    <td>{{ line.measure ?? '-' }}</td>
+                    <td class="text-right">{{ line.grossPrice is not null ? line.grossPrice|number_format(2, '.', ' ') ~ ' EUR' : '-' }}</td>
+                    <td class="text-right">{{ line.vat is not null ? line.vat ~ ' %' : '-' }}</td>
+                    <td class="text-right">{{ lineTotal|number_format(2, '.', ' ') }} EUR</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">No invoice lines available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% set total = invoice.totalAmount is not null ? invoice.totalAmount : (computedTotal > 0 ? computedTotal : invoice.total) %}
+    <table class="totals">
+        <tr>
+            <td class="label">Total</td>
+            <td class="value">{{ total|number_format(2, '.', ' ') }} EUR</td>
+        </tr>
+    </table>
+</body>
+</html>

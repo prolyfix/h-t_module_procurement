@@ -13,6 +13,9 @@
                         <a class="action-edit btn btn-primary" href="/admin?crudAction=edit&crudControllerFqcn=Prolyfix%5CProcurementBundle%5CController%5CInvoiceCrudController&entityId={{ entity.instance.id }}" data-action-name="edit">
                             <span class="action-label">{% trans %}edit{% endtrans %}</span>
                         </a>
+                        <a class="action-download-pdf btn btn-outline-primary" href="{{ ea_url().setController('Prolyfix\\ProcurementBundle\\Controller\\InvoiceCrudController').setAction('downloadPdf').setEntityId(entity.instance.id).generateUrl() }}" data-action-name="downloadPdf">
+                            <span class="action-label">{% trans %}procurement.downloadPdf{% endtrans %}</span>
+                        </a>
                     </div>
                 </div>
             </div>

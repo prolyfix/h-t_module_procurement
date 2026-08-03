@@ -19,6 +19,7 @@ procurement:
   deliverySlipId: Lieferscheinnummer
   deliverySlipInfo: Lieferscheindaten
   invoice: Rechnung
+  downloadPdf: PDF herunterladen
   ocr:
     title: Dokument-Scanner (KI / OCR)
     upload: PDF-Dokument hochladen

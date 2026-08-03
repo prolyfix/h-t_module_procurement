@@ -19,7 +19,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
+
 
 #[Route('/procurement/ocr', name: 'procurement_ocr_')]
 class OcrScannerController extends AbstractCrudController
@@ -34,7 +35,7 @@ class OcrScannerController extends AbstractCrudController
         return Media::class;
     }
 
-    #[\Symfony\Component\Routing\Annotation\Route('/pdf/{id}', name: 'serve_pdf', methods: ['GET'])]
+    #[Route('/pdf/{id}', name: 'serve_pdf', methods: ['GET'])]
     public function servePdf(int $id): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
